@@ -556,12 +556,13 @@ class Decoder(BaseLayer):
                 num_classes depends on the configured lm_head.
         """
         hidden_states = forward_outputs["hidden_states"]
+
+        # Reuse the token embedding.
+        with child_context("self_emb_attend", module=self):
+            logits = self.emb.attend(hidden_states)
         if "lm_head" in self.children:
-            logits = self.lm_head(hidden_states)
-        else:
-            # Reuse the token embedding.
-            with child_context("self_emb_attend", module=self):
-                logits = self.emb.attend(hidden_states)
+            logits += self.lm_head(hidden_states)
+
         if self._output_logits_modifier is not None:
             logits = self._output_logits_modifier(logits)
         return logits
