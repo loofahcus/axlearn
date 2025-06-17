@@ -504,6 +504,7 @@ class Decoder(BaseLayer):
         emb_batch = {**input_batch}
         emb_batch["inputs"] = emb_batch["input_ids"]
         x = self.emb(input_batch=emb_batch)
+        emb = x
 
         if mode == ForwardMode.FORWARD:
             transformer_state, x = (
@@ -542,6 +543,7 @@ class Decoder(BaseLayer):
         else:
             raise ValueError(f"Unrecognized mode {mode}.")
         x = x.data
+        x = x + emb
         self._add_tensor_stats("outputs", x)
 
         if "output_norm" in self.children:
