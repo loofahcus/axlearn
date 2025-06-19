@@ -446,6 +446,8 @@ class Decoder(BaseLayer):
         emb: TransformerTextEmbeddings.Config = TransformerTextEmbeddings.default_config()
         # Transformer model trunk.
         transformer: BaseStackedTransformerLayer.Config = StackedTransformerLayer.default_config()
+        # Layer norm applied to transformer input.
+        input_norm: Optional[InstantiableConfig] = None
         # Layer norm applied to transformer output.
         output_norm: Optional[InstantiableConfig] = LayerNorm.default_config()
         # Optional dropout rate for the transformer output.
@@ -475,6 +477,8 @@ class Decoder(BaseLayer):
             self._add_child("attention_mask", cfg.attention_mask)
         self._add_child("emb", cfg.emb.set(dim=cfg.dim, vocab_size=cfg.vocab_size))
         self._add_child("transformer", cfg.transformer.set(input_dim=cfg.dim))
+        if cfg.input_norm is not None:
+            self._add_child("input_norm", cfg.input_norm.set(input_dim=cfg.dim))
         if cfg.output_norm is not None:
             self._add_child("output_norm", cfg.output_norm.set(input_dim=cfg.dim))
         self._add_child("output_dropout", cfg.output_dropout)
@@ -504,6 +508,9 @@ class Decoder(BaseLayer):
         emb_batch = {**input_batch}
         emb_batch["inputs"] = emb_batch["input_ids"]
         x = self.emb(input_batch=emb_batch)
+        if "input_norm" in self.children:
+            x = self.input_norm(x)
+            self._add_tensor_stats("norm_inputs", x)
 
         if mode == ForwardMode.FORWARD:
             transformer_state, x = (
