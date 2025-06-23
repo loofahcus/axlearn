@@ -1965,6 +1965,14 @@ def adastar_optimizer(
             )
             _log_per_layer_stats(
                 vectorized_tree_map(
+                    lambda pn, un: un / pn,
+                    param_norm,
+                    smoothed_update_norm,
+                ),
+                summary_suffix="update_param_norm_ratio",
+            )
+            _log_per_layer_stats(
+                vectorized_tree_map(
                     lambda cov, pn, un: cov / pn / un,
                     _compute_covariance(param_values, raw_updates),
                     param_norm,
@@ -2013,7 +2021,9 @@ def adastar_optimizer(
                 context.add_summary("schedule_step", step_inc)
                 context.add_summary("schedule_scale", schedule_scale)
                 context.add_summary("learning_rate", learning_rate * schedule_scale)
-                context.add_summary("weight_decay_rate", weight_decay * schedule_scale)
+                context.add_summary(
+                    "weight_decay_rate", weight_decay_scale * weight_decay * schedule_scale
+                )
             return -schedule_scale * updates_with_wd
 
         weight_decay_scales = _weight_decay_scales(
