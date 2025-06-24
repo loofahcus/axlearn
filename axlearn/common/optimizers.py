@@ -1743,6 +1743,7 @@ def adastar_optimizer(
     update_schedule: schedule.Schedule,
     verbosity: int = 0,
     weight_decay_per_param_scale: Optional[Callable[[NestedOptParam], Any]] = None,
+    adapt_weight_decay: Optional[float] = None,
 ) -> PartitionedGradientTransformation:
     """An optimizer covering both {adamw_decoupled,adafactor}_optimizer (with factored=False).
 
@@ -1817,6 +1818,7 @@ def adastar_optimizer(
             param-update correlation stats to summaries.
         weight_decay_per_param_scale: the per-param decay scale. The scale
             will be applied on top of the global decay rate.
+        adapt_weight_decay: the coefficient of the adaptive weight decay.
 
     Returns:
         A PartitionedGradientTransformation representing an Adafactor optimizer.
@@ -2029,6 +2031,17 @@ def adastar_optimizer(
         weight_decay_scales = _weight_decay_scales(
             params, per_param_scale=weight_decay_per_param_scale
         )
+        if adapt_weight_decay:
+            update_norm = _compute_rms_norms(updates)
+            param_values = jax.tree.map(lambda p: p.value, params)
+            param_norm = _compute_rms_norms(param_values)
+            weight_decay_scales = jax.tree.map(
+                lambda u, p, s: jnp.minimum(learning_rate * u / p / adapt_weight_decay, s),
+                update_norm,
+                param_norm,
+                weight_decay_scales,
+            )
+            _log_per_layer_stats(weight_decay_scales, summary_suffix="weight_decay_scales")
         updates2 = jax.tree.map(
             lambda u, p, s: None if u is None else _update2(u, param=p, weight_decay_scale=s),
             updates,
