@@ -2014,8 +2014,12 @@ def adastar_optimizer(
     def update2_fn(updates, state: Tensor, params: NestedOptParam):
         step_inc = optax.safe_int32_increment(state)
 
-        def _update2(u: Tensor, param: OptParam, weight_decay_scale: float):
+        def _update2(u: Tensor, param: OptParam, weight_decay_scale: Union[float, Tensor]):
             lr_scaled_updates = learning_rate * u
+            if isinstance(weight_decay_scale, Tensor) and len(weight_decay_scale.shape) > 0:
+                weight_decay_scale = jnp.expand_dims(
+                    weight_decay_scale, axis=range(1, len(param.shape))
+                )
             updates_with_wd = lr_scaled_updates + weight_decay * param.value * weight_decay_scale
             schedule_scale = update_schedule(step_inc)
             context = current_context()
@@ -2036,7 +2040,9 @@ def adastar_optimizer(
             param_values = jax.tree.map(lambda p: p.value, params)
             param_norm = _compute_rms_norms(param_values)
             weight_decay_scales = jax.tree.map(
-                lambda u, p, s: jnp.minimum(learning_rate * u / p / adapt_weight_decay, s),
+                lambda u, p, s: jnp.minimum(
+                    learning_rate * u / p / adapt_weight_decay / weight_decay, s
+                ),
                 update_norm,
                 param_norm,
                 weight_decay_scales,
