@@ -556,6 +556,7 @@ class Decoder(BaseLayer):
             self._add_tensor_stats("norm_outputs", x)
         x = self.output_dropout(x)
         if "lm_head" in self.children:
+            logits = logits / (self.config.dim / 768)
             logits = self.lm_head(x)
         else:
             # Reuse the token embedding.
