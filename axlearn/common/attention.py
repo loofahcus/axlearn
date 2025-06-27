@@ -2488,9 +2488,9 @@ class TransformerAttentionLayer(BaseLayer):
     def __init__(self, cfg: Config, *, parent: Module):
         super().__init__(cfg, parent=parent)
         cfg = self.config
-        if cfg.structure == "v2":
+        if cfg.structure in ("v2", "v3"):
             if not isinstance(cfg.norm, dict):
-                raise ValueError(f"When structure=v2, cfg.norm must be a dict: {cfg.norm}")
+                raise ValueError(f"When structure=v2|v3, cfg.norm must be a dict: {cfg.norm}")
             for position, norm in cfg.norm.items():
                 self._add_child(position.value, norm.set(input_dim=cfg.target_dim))
         else:
@@ -2646,6 +2646,13 @@ class TransformerAttentionLayer(BaseLayer):
             data = self.res_norm(data) if NormPosition.RES_NORM in cfg.norm else data
             data = target + self.stochastic_depth(self.dropout(data))
             data = self.out_norm(data) if NormPosition.OUT_NORM in cfg.norm else data
+        elif cfg.structure == "v3":
+            norm_target = self.in_norm(target[1])
+            atten_state, atten_output = attention_thunk(target[0])
+            data = atten_output.data
+            data = self.res_norm(data)
+            data = norm_target + self.stochastic_depth(self.dropout(data))
+            data = jnp.stack([self.out_norm(data), data], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return dict(attention=atten_state), self.Output(
@@ -2869,9 +2876,9 @@ class TransformerFeedForwardLayer(BaseLayer):
     def __init__(self, cfg: Config, *, parent: Module):
         super().__init__(cfg, parent=parent)
         cfg: TransformerFeedForwardLayer.Config = self.config
-        if cfg.structure == "v2":
+        if cfg.structure in ("v2", "v3"):
             if not isinstance(cfg.norm, dict):
-                raise ValueError(f"When structure=v2, cfg.norm must be a dict: {cfg.norm}")
+                raise ValueError(f"When structure=v2|v3, cfg.norm must be a dict: {cfg.norm}")
             for position, norm in cfg.norm.items():
                 self._add_child(position.value, norm.set(input_dim=cfg.input_dim))
         else:
@@ -2911,7 +2918,7 @@ class TransformerFeedForwardLayer(BaseLayer):
         )
         # Add dropout layers for different structures.
         # Always apply two dropouts in v2 structure.
-        if cfg.structure in ["prenorm", "hybridnorm", "nonorm", "v2"]:
+        if cfg.structure in ["prenorm", "hybridnorm", "nonorm", "v2", "v3"]:
             self._add_child("dropout1", cfg.dropout)
             self._add_child("dropout2", cfg.dropout)
         elif cfg.structure in ["postnorm"]:
@@ -2995,6 +3002,19 @@ class TransformerFeedForwardLayer(BaseLayer):
                 x *= cfg.residual_weight
             x += inputs
             x = self.out_norm(x) if NormPosition.OUT_NORM in cfg.norm else x
+        elif cfg.structure == "v3":
+            norm = self.in_norm(inputs[1])
+            x = self._linear1_activation(inputs[0])
+            x = self.dropout1(x)
+            x = _linear2(x)
+            x = self._remat_name(x, remat_pt2)
+            x = self.res_norm(x)
+            x = self.dropout2(x)
+            x = self.stochastic_depth(x)
+            if cfg.residual_weight != 1:
+                x *= cfg.residual_weight
+            x += norm
+            x = jnp.stack([self.out_norm(x), x], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return x

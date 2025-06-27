@@ -771,7 +771,7 @@ class TransformerFeedForwardMoE(DenseGeneralBaseLayer):
         self._add_child("stochastic_depth", cfg.stochastic_depth)
         # Add norm layers for different structures.
 
-        if cfg.structure == "v2":
+        if cfg.structure in ("v2", "v3"):
             if not isinstance(cfg.norm, dict):
                 raise ValueError(f"When structure=v2, cfg.norm must be a dict: {cfg.norm}")
             for position, norm in cfg.norm.items():
@@ -791,7 +791,7 @@ class TransformerFeedForwardMoE(DenseGeneralBaseLayer):
 
         # Add dropout layers for different structures.
         # Always apply two dropouts in v2 structure.
-        if cfg.structure in ["prenorm", "hybridnorm", "nonorm", "v2"]:
+        if cfg.structure in ["prenorm", "hybridnorm", "nonorm", "v2", "v3"]:
             self._add_child("dropout1", cfg.dropout)
             self._add_child("dropout2", cfg.dropout)
         elif cfg.structure in ["postnorm"]:
@@ -844,6 +844,16 @@ class TransformerFeedForwardMoE(DenseGeneralBaseLayer):
                 x *= cfg.residual_weight
             x += inputs
             x = self.out_norm(x) if NormPosition.OUT_NORM in cfg.norm else x
+        elif cfg.structure == "v3":
+            norm = self.in_norm(inputs[1])
+            x = self._dispatch_and_combine(inputs[0])
+            x = self.res_norm(x)
+            x = self.dropout2(x)
+            x = self.stochastic_depth(x)
+            if cfg.residual_weight != 1:
+                x *= cfg.residual_weight
+            x += norm
+            x = jnp.stack([self.out_norm(x), x], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return x
