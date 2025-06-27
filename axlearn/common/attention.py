@@ -2647,12 +2647,11 @@ class TransformerAttentionLayer(BaseLayer):
             data = target + self.stochastic_depth(self.dropout(data))
             data = self.out_norm(data) if NormPosition.OUT_NORM in cfg.norm else data
         elif cfg.structure == "v3":
-            norm_target = self.in_norm(target[1])
             atten_state, atten_output = attention_thunk(target[0])
             data = atten_output.data
             data = self.res_norm(data)
-            data = norm_target + self.stochastic_depth(self.dropout(data))
-            data = jnp.stack([self.out_norm(data), data], axis=0)
+            data = target[1] + self.stochastic_depth(self.dropout(data))
+            data = jnp.stack([self.out_norm(data), self.in_norm(data)], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return dict(attention=atten_state), self.Output(
@@ -3003,7 +3002,6 @@ class TransformerFeedForwardLayer(BaseLayer):
             x += inputs
             x = self.out_norm(x) if NormPosition.OUT_NORM in cfg.norm else x
         elif cfg.structure == "v3":
-            norm = self.in_norm(inputs[1])
             x = self._linear1_activation(inputs[0])
             x = self.dropout1(x)
             x = _linear2(x)
@@ -3013,8 +3011,8 @@ class TransformerFeedForwardLayer(BaseLayer):
             x = self.stochastic_depth(x)
             if cfg.residual_weight != 1:
                 x *= cfg.residual_weight
-            x += norm
-            x = jnp.stack([self.out_norm(x), x], axis=0)
+            x += inputs[1]
+            x = jnp.stack([self.out_norm(x), self.in_norm(x)], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return x

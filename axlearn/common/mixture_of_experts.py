@@ -845,15 +845,14 @@ class TransformerFeedForwardMoE(DenseGeneralBaseLayer):
             x += inputs
             x = self.out_norm(x) if NormPosition.OUT_NORM in cfg.norm else x
         elif cfg.structure == "v3":
-            norm = self.in_norm(inputs[1])
             x = self._dispatch_and_combine(inputs[0])
             x = self.res_norm(x)
             x = self.dropout2(x)
             x = self.stochastic_depth(x)
             if cfg.residual_weight != 1:
                 x *= cfg.residual_weight
-            x += norm
-            x = jnp.stack([self.out_norm(x), x], axis=0)
+            x += inputs[1]
+            x = jnp.stack([self.out_norm(x), self.in_norm(x)], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return x
