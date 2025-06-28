@@ -467,6 +467,7 @@ class Decoder(BaseLayer):
         output_logits_modifier: Optional[ConfigOr[logit_modifiers.LogitsToLogitsFn]] = None
         # The decoding implementation.
         decoding: DecodingLayer.Config = DecodingLayer.default_config()
+        structure: Optional[str] = None
 
     def __init__(self, cfg: Config, *, parent: Module):
         super().__init__(cfg, parent=parent)
@@ -508,6 +509,9 @@ class Decoder(BaseLayer):
         emb_batch = {**input_batch}
         emb_batch["inputs"] = emb_batch["input_ids"]
         x = self.emb(input_batch=emb_batch)
+        cfg = self.config
+        if cfg.structure == "v3":
+            x = jnp.repeat(jnp.expand_dims(x, axis=0), 2, axis=0)
         if "input_norm" in self.children:
             x = self.input_norm(x)
             self._add_tensor_stats("norm_inputs", x)
@@ -549,6 +553,8 @@ class Decoder(BaseLayer):
         else:
             raise ValueError(f"Unrecognized mode {mode}.")
         x = x.data
+        if cfg.structure == "v3":
+            x = x[0]
         self._add_tensor_stats("outputs", x)
 
         if "output_norm" in self.children:
@@ -563,7 +569,7 @@ class Decoder(BaseLayer):
                 logits = self.emb.attend(x)
         if self._output_logits_modifier is not None:
             logits = self._output_logits_modifier(logits)
-        logits = with_sharding_constraint(logits, PartitionSpec(*self.config.logits_partition_spec))
+        logits = with_sharding_constraint(logits, PartitionSpec(*cfg.logits_partition_spec))
         # TODO(markblee): Rename to just "transformer". "transformer_state" is a bit redundant.
         return dict(transformer_state=transformer_state), dict(logits=logits, hidden_states=x)
 
