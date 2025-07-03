@@ -548,6 +548,48 @@ class OptimizerTest(TestCase):
             print(params.value)
         assert_allclose(params.value, expected_value)
 
+    def test_adastar_router_orthogonalization(self):
+        optimizer_kwargs = dict(
+            learning_rate=0.1,
+            gradient_ema_decay=0.9,
+            gradient_ema_debias=True,
+            gradient_square_ema_decay=0.98,
+            gradient_square_ema_debias=True,
+            eps=1e-8,
+            eps_square=0,
+            raw_update_clipping_threshold=None,
+            update_ema_decay=None,
+            update_ema_debias=None,
+            update_schedule=1.0,
+            router_orthogonalization_weight=1.0,
+        )
+        optimizer = adastar_optimizer(**optimizer_kwargs)
+        params = dict(
+            layer=VDict(
+                gate_weight=OptParam(
+                    value=jax.random.normal(key=jax.random.PRNGKey(42), shape=(512, 64)),
+                    factorization_spec=None,
+                    weight_decay_scale=None,
+                )
+            )
+        )
+        state = optimizer.init(params)
+
+        def compute_loss(param_values):
+            e_w = param_values["layer"]["gate_weight"]
+            e_w_rms = jnp.sqrt(jnp.square(e_w).sum(axis=-2, keepdims=True))
+            e_w_normalized = e_w / e_w_rms
+            e_w_cos = jnp.einsum("me,mf->ef", e_w_normalized, e_w_normalized)
+            e_w_cos_cov = e_w_cos - jnp.eye(e_w_cos.shape[0])
+            return jnp.square(e_w_cos_cov).sum()
+
+        param_values = jax.tree.map(lambda p: p.value, params)
+        grads = jax.grad(compute_loss)(param_values)
+        updates, _ = optimizer.update(
+            jax.tree.map(lambda p: jnp.zeros_like(p.value), params), state=state, params=params
+        )
+        assert_allclose(-grads["layer"]["gate_weight"], updates["layer"]["gate_weight"])
+
     @parameterized.parameters(([0, 0, 0, 0],), ([1, 2, 3, 4],))
     def test_adamw_multiply_by_parameter_scale(self, params):
         # We set a min scale for param rms.

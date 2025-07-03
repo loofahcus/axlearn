@@ -29,7 +29,7 @@ Despite this, there are no plans to stop supporting `PartitionedGradientTransfor
 import dataclasses
 import re
 from collections.abc import Sequence
-from typing import Any, Callable, NamedTuple, Optional, Union
+from typing import Any, Callable, NamedTuple, Optional, Tuple, Union
 
 import chex
 import jax
@@ -38,6 +38,7 @@ import typing_extensions
 from absl import logging
 from jax import numpy as jnp
 from jax._src.sharding_impls import TransferToMemoryKind
+from jaxlib import xla_extension
 from optax._src import numerics
 
 from axlearn.common import schedule, struct
@@ -1742,6 +1743,7 @@ def adastar_optimizer(
     weight_decay: float = 0,
     weight_decay_per_param_scale: Optional[Callable[[NestedOptParam], Any]] = None,
     update_schedule: schedule.Schedule,
+    router_orthogonalization_weight: Optional[float] = None,
     verbosity: int = 0,
 ) -> PartitionedGradientTransformation:
     """An optimizer covering both {adamw_decoupled,adafactor}_optimizer (with factored=False).
@@ -1818,6 +1820,9 @@ def adastar_optimizer(
             If None, all leaves will have a scale of 1.
         update_schedule: an update schedule, which is applied to scale both the learning rate
             and the weight decay.
+        router_orthogonalization_weight: (float) optional rate at which to push router weights
+            orthogonal.
+            Ref: https://yiyan.baidu.com/blog/publication/ERNIE_Technical_Report.pdf#3.4.1
         verbosity: The verbosity level of summaries. When verbosity > 0, adds update norms and
             param-update correlation stats to summaries.
 
@@ -2007,7 +2012,12 @@ def adastar_optimizer(
     def update2_fn(updates, state: Tensor, params: NestedOptParam):
         step_inc = optax.safe_int32_increment(state)
 
-        def _update2(u: Tensor, param: OptParam, weight_decay_scale: float = 1.0):
+        def _update2(
+            path: Tuple[xla_extension.pytree.DictKey],
+            u: Tensor,
+            param: OptParam,
+            weight_decay_scale: float = 1.0,
+        ):
             lr_scaled_updates = learning_rate * u
             updates_with_wd = lr_scaled_updates + weight_decay * param.value * weight_decay_scale
             schedule_scale = update_schedule(step_inc)
@@ -2019,24 +2029,39 @@ def adastar_optimizer(
                 context.add_summary(
                     "weight_decay_rate", weight_decay * schedule_scale * weight_decay_scale
                 )
-            return -schedule_scale * updates_with_wd
+            updates = -schedule_scale * updates_with_wd
+            if router_orthogonalization_weight and "gate_weight" in map(lambda x: x.key, path):
+                w_norm = jnp.sqrt(jnp.square(param.value).sum(axis=-2, keepdims=True))
+                w_normalized = param.value / w_norm
+                wij = jnp.einsum("...di,...dj->...ij", w_normalized, w_normalized)
+                updates_with_router_orthog = (
+                    4
+                    * router_orthogonalization_weight
+                    * (
+                        jnp.einsum("...ij,...di->...dj", wij, w_normalized)
+                        - jnp.einsum("...ij,...dj->...dj", jnp.square(wij), w_normalized)
+                    )
+                    / w_norm
+                )
+                updates -= updates_with_router_orthog
+            return updates
 
         if weight_decay_per_param_scale is not None:
             weight_decay_scales = _weight_decay_scales(
                 params, per_param_scale=weight_decay_per_param_scale
             )
-            updates2 = jax.tree.map(
-                lambda u, p, wds: None
+            updates2 = jax.tree.map_with_path(
+                lambda path, u, p, wds: None
                 if u is None
-                else _update2(u, param=p, weight_decay_scale=wds),
+                else _update2(path, u, param=p, weight_decay_scale=wds),
                 updates,
                 params,
                 weight_decay_scales,
                 is_leaf=lambda x: x is None,
             )
         else:
-            updates2 = jax.tree.map(
-                lambda u, p: None if u is None else _update2(u, param=p),
+            updates2 = jax.tree.map_with_path(
+                lambda path, u, p: None if u is None else _update2(path, u, param=p),
                 updates,
                 params,
                 is_leaf=lambda x: x is None,
