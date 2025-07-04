@@ -561,6 +561,7 @@ class OptimizerTest(TestCase):
             update_ema_decay=None,
             update_ema_debias=None,
             update_schedule=1.0,
+            router_orthogonalization_names=("gate_weight",),
             router_orthogonalization_weight=1.0,
         )
         optimizer = adastar_optimizer(**optimizer_kwargs)
@@ -570,7 +571,12 @@ class OptimizerTest(TestCase):
                     value=jax.random.normal(key=jax.random.PRNGKey(42), shape=(512, 64)),
                     factorization_spec=None,
                     weight_decay_scale=None,
-                )
+                ),
+                w=OptParam(
+                    value=jax.random.normal(key=jax.random.PRNGKey(42), shape=(512, 64)),
+                    factorization_spec=None,
+                    weight_decay_scale=None,
+                ),
             )
         )
         state = optimizer.init(params)
@@ -589,6 +595,7 @@ class OptimizerTest(TestCase):
             jax.tree.map(lambda p: jnp.zeros_like(p.value), params), state=state, params=params
         )
         assert_allclose(-grads["layer"]["gate_weight"], updates["layer"]["gate_weight"])
+        assert_allclose(updates["layer"]["w"], 0)
 
     @parameterized.parameters(([0, 0, 0, 0],), ([1, 2, 3, 4],))
     def test_adamw_multiply_by_parameter_scale(self, params):

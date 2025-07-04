@@ -1743,6 +1743,7 @@ def adastar_optimizer(
     weight_decay: float = 0,
     weight_decay_per_param_scale: Optional[Callable[[NestedOptParam], Any]] = None,
     update_schedule: schedule.Schedule,
+    router_orthogonalization_names: Optional[Tuple[str]] = None,
     router_orthogonalization_weight: Optional[float] = None,
     verbosity: int = 0,
 ) -> PartitionedGradientTransformation:
@@ -1820,6 +1821,8 @@ def adastar_optimizer(
             If None, all leaves will have a scale of 1.
         update_schedule: an update schedule, which is applied to scale both the learning rate
             and the weight decay.
+        router_orthogonalization_names: Parameter names to which the router orthogonalization loss
+            should be applied.
         router_orthogonalization_weight: (float) optional rate at which to push router weights
             orthogonal.
             Ref: https://yiyan.baidu.com/blog/publication/ERNIE_Technical_Report.pdf#3.4.1
@@ -2030,7 +2033,13 @@ def adastar_optimizer(
                     "weight_decay_rate", weight_decay * schedule_scale * weight_decay_scale
                 )
             updates = -schedule_scale * updates_with_wd
-            if router_orthogonalization_weight and "gate_weight" in map(lambda x: x.key, path):
+            if (
+                router_orthogonalization_names
+                and router_orthogonalization_weight
+                and any(
+                    name in map(lambda x: x.key, path) for name in router_orthogonalization_names
+                )
+            ):
                 w_norm = jnp.sqrt(jnp.square(param.value).sum(axis=-2, keepdims=True))
                 w_normalized = param.value / w_norm
                 wij = jnp.einsum("...di,...dj->...ij", w_normalized, w_normalized)
