@@ -465,6 +465,8 @@ class Decoder(BaseLayer):
         output_logits_modifier: Optional[ConfigOr[logit_modifiers.LogitsToLogitsFn]] = None
         # The decoding implementation.
         decoding: DecodingLayer.Config = DecodingLayer.default_config()
+        # Whether to use residual mode.
+        residual: Optional[bool] = None
 
     def __init__(self, cfg: Config, *, parent: Module):
         super().__init__(cfg, parent=parent)
@@ -504,6 +506,9 @@ class Decoder(BaseLayer):
         emb_batch = {**input_batch}
         emb_batch["inputs"] = emb_batch["input_ids"]
         x = self.emb(input_batch=emb_batch)
+        cfg = self.config
+        if cfg.residual:
+            x = jnp.stack([x, x], axis=0)
 
         if mode == ForwardMode.FORWARD:
             transformer_state, x = (
@@ -545,8 +550,13 @@ class Decoder(BaseLayer):
         self._add_tensor_stats("outputs", x)
 
         if "output_norm" in self.children:
-            x = self.output_norm(x)
+            if cfg.residual:
+                x = x[0] + self.output_norm(x[1])
+            else:
+                x = self.output_norm(x)
             self._add_tensor_stats("norm_outputs", x)
+        elif cfg.residual:
+            x = x[0] + x[1]
         x = self.output_dropout(x)
         if "lm_head" in self.children:
             logits = self.lm_head(x)

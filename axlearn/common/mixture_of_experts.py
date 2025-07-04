@@ -779,7 +779,7 @@ class TransformerFeedForwardMoE(DenseGeneralBaseLayer):
         else:
             if not isinstance(cfg.norm, InstantiableConfig):
                 raise ValueError("When structure != v2, cfg.norm must be a config.")
-            if cfg.structure in ["prenorm", "postnorm"]:
+            if cfg.structure in ["prenorm", "postnorm", "residual"]:
                 self._add_child("norm", cfg.norm.set(input_dim=cfg.input_dim))
             elif cfg.structure == "hybridnorm":
                 self._add_child("prenorm", cfg.norm.set(input_dim=cfg.input_dim))
@@ -794,7 +794,7 @@ class TransformerFeedForwardMoE(DenseGeneralBaseLayer):
         if cfg.structure in ["prenorm", "hybridnorm", "nonorm", "v2"]:
             self._add_child("dropout1", cfg.dropout)
             self._add_child("dropout2", cfg.dropout)
-        elif cfg.structure in ["postnorm"]:
+        elif cfg.structure in ["postnorm", "residual"]:
             self._add_child("dropout", cfg.dropout)
         else:
             raise NotImplementedError(cfg.structure)
@@ -844,6 +844,15 @@ class TransformerFeedForwardMoE(DenseGeneralBaseLayer):
                 x *= cfg.residual_weight
             x += inputs
             x = self.out_norm(x) if NormPosition.OUT_NORM in cfg.norm else x
+        elif cfg.structure == "residual":
+            x, res = x
+            fx = self._dispatch_and_combine(x)
+            fx = self.stochastic_depth(self.dropout(fx))
+            if cfg.residual_weight != 1:
+                fx *= cfg.residual_weight
+            res += fx
+            x = self.norm(x + fx)
+            x = jnp.stack([x, res], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return x

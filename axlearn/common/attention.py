@@ -2533,6 +2533,9 @@ class TransformerAttentionLayer(BaseLayer):
         # Ref: https://github.com/google/praxis/blob/main/praxis/layers/transformers.py#L1129
         # TODO (bwzhang@) Adding a unittest for the hybridnorm.
         # v2: see comments on NormPosition for details.
+        # residual:
+        #     paper: https://arxiv.org/pdf/2304.14802
+        #     code: https://github.com/microsoft/ResiDual
         structure: str = "prenorm"
 
     def __init__(self, cfg: Config, *, parent: Module):
@@ -2546,7 +2549,7 @@ class TransformerAttentionLayer(BaseLayer):
         else:
             if not isinstance(cfg.norm, InstantiableConfig):
                 raise ValueError("When structure != v2, cfg.norm must be a config.")
-            if cfg.structure in ["prenorm", "postnorm"]:
+            if cfg.structure in ["prenorm", "postnorm", "residual"]:
                 self._add_child("norm", cfg.norm.set(input_dim=cfg.target_dim))
             elif cfg.structure == "hybridnorm":
                 self._add_child("prenorm", cfg.norm.set(input_dim=cfg.target_dim))
@@ -2696,6 +2699,13 @@ class TransformerAttentionLayer(BaseLayer):
             data = self.res_norm(data) if NormPosition.RES_NORM in cfg.norm else data
             data = target + self.stochastic_depth(self.dropout(data))
             data = self.out_norm(data) if NormPosition.OUT_NORM in cfg.norm else data
+        elif cfg.structure == "residual":
+            x, res = target
+            atten_state, atten_output = attention_thunk(x)
+            fx = self.stochastic_depth(self.dropout(atten_output.data))
+            res += fx
+            x = self.norm(x + fx)
+            data = jnp.stack([x, res], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return dict(attention=atten_state), self.Output(
@@ -2888,6 +2898,9 @@ class TransformerFeedForwardLayer(BaseLayer):
         # * hybridnorm: y = x + postnorm(feedforward(prenorm(x)))
         # * nonorm: y = feedforward(x)   # no residual, which is usually applied externally.
         # * v2: see comments NormPosition for details.
+        # * residual:
+        #     paper: https://arxiv.org/pdf/2304.14802
+        #     code: https://github.com/microsoft/ResiDual
         #
         # References:
         # prenorm/postnorm: https://arxiv.org/abs/2002.04745.
@@ -2927,7 +2940,7 @@ class TransformerFeedForwardLayer(BaseLayer):
         else:
             if not isinstance(cfg.norm, InstantiableConfig):
                 raise ValueError("When structure != v2, cfg.norm must be a config.")
-            if cfg.structure in ["prenorm", "postnorm"]:
+            if cfg.structure in ["prenorm", "postnorm", "residual"]:
                 self._add_child("norm", cfg.norm.set(input_dim=cfg.input_dim))
             elif cfg.structure == "hybridnorm":
                 self._add_child("prenorm", cfg.norm.set(input_dim=cfg.input_dim))
@@ -2964,7 +2977,7 @@ class TransformerFeedForwardLayer(BaseLayer):
         if cfg.structure in ["prenorm", "hybridnorm", "nonorm", "v2"]:
             self._add_child("dropout1", cfg.dropout)
             self._add_child("dropout2", cfg.dropout)
-        elif cfg.structure in ["postnorm"]:
+        elif cfg.structure in ["postnorm", "residual"]:
             self._add_child("dropout", cfg.dropout)
         else:
             raise NotImplementedError(cfg.structure)
@@ -3045,6 +3058,17 @@ class TransformerFeedForwardLayer(BaseLayer):
                 x *= cfg.residual_weight
             x += inputs
             x = self.out_norm(x) if NormPosition.OUT_NORM in cfg.norm else x
+        elif cfg.structure == "residual":
+            x, res = inputs
+            fx = self._linear1_activation(x)
+            fx = _linear2(fx)
+            fx = self._remat_name(fx, remat_pt2)
+            fx = self.stochastic_depth(self.dropout(fx))
+            if cfg.residual_weight != 1:
+                fx *= cfg.residual_weight
+            res += fx
+            x = self.norm(x + fx)
+            x = jnp.stack([x, res], axis=0)
         else:
             raise NotImplementedError(cfg.structure)
         return x
