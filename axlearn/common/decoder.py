@@ -551,12 +551,12 @@ class Decoder(BaseLayer):
 
         if "output_norm" in self.children:
             if cfg.residual:
-                x = x[0] + self.output_norm(x[1])
+                x = (x[0] + self.output_norm(x[1])) / 2
             else:
                 x = self.output_norm(x)
             self._add_tensor_stats("norm_outputs", x)
         elif cfg.residual:
-            x = x[0] + x[1]
+            x = (x[0] + x[1]) / 2
         x = self.output_dropout(x)
         if "lm_head" in self.children:
             logits = self.lm_head(x)
