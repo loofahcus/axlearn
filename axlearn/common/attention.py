@@ -2703,9 +2703,9 @@ class TransformerAttentionLayer(BaseLayer):
             x, res = target
             atten_state, atten_output = attention_thunk(x)
             fx = atten_output.data
+            res += self.stochastic_depth(self.dropout(fx))
             fx = self.res_norm(fx) if NormPosition.RES_NORM in cfg.norm else fx
             fx = self.stochastic_depth(self.dropout(fx))
-            res += fx
             x = self.out_norm(x + fx) if NormPosition.OUT_NORM in cfg.norm else x + fx
             data = jnp.stack([x, res], axis=0)
         else:
