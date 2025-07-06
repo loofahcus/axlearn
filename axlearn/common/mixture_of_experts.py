@@ -847,9 +847,15 @@ class TransformerFeedForwardMoE(DenseGeneralBaseLayer):
         elif cfg.structure == "residual":
             x, res = x
             fx = self._dispatch_and_combine(x)
-            res += cfg.residual_weight * self.stochastic_depth(self.dropout2(fx))
+            with child_context("moe_dropout2_call1", module=self.dropout2):
+                res_fx = self.dropout2(fx)
+            with child_context("moe_stochastic_depth_call1", module=self.stochastic_depth):
+                res += cfg.residual_weight * self.stochastic_depth(res_fx)
             fx = self.res_norm(fx) if NormPosition.RES_NORM in cfg.norm else fx
-            fx = self.stochastic_depth(self.dropout2(fx))
+            with child_context("moe_dropout2_call2", module=self.dropout2):
+                fx = self.dropout2(fx)
+            with child_context("moe_stochastic_depth_call2", module=self.stochastic_depth):
+                fx = self.stochastic_depth(fx)
             if cfg.residual_weight != 1:
                 fx *= cfg.residual_weight
             x = self.out_norm(x + fx) if NormPosition.OUT_NORM in cfg.norm else x + fx

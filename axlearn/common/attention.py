@@ -2703,9 +2703,15 @@ class TransformerAttentionLayer(BaseLayer):
             x, res = target
             atten_state, atten_output = attention_thunk(x)
             fx = atten_output.data
-            res += self.stochastic_depth(self.dropout(fx))
+            with child_context("attn_dropout_call1", module=self.dropout):
+                res_fx = self.dropout(fx)
+            with child_context("attn_stochastic_depth_call1", module=self.stochastic_depth):
+                res += self.stochastic_depth(res_fx)
             fx = self.res_norm(fx) if NormPosition.RES_NORM in cfg.norm else fx
-            fx = self.stochastic_depth(self.dropout(fx))
+            with child_context("attn_dropout_call2", module=self.dropout):
+                fx = self.dropout(fx)
+            with child_context("attn_stochastic_depth_call2", module=self.stochastic_depth):
+                fx = self.stochastic_depth(fx)
             x = self.out_norm(x + fx) if NormPosition.OUT_NORM in cfg.norm else x + fx
             data = jnp.stack([x, res], axis=0)
         else:
@@ -3066,9 +3072,15 @@ class TransformerFeedForwardLayer(BaseLayer):
             fx = self.dropout1(fx)
             fx = _linear2(fx)
             fx = self._remat_name(fx, remat_pt2)
-            res += cfg.residual_weight * self.stochastic_depth(self.dropout2(fx))
+            with child_context("ffn_dropout2_call1", module=self.dropout2):
+                res_fx = self.dropout2(fx)
+            with child_context("ffn_stochastic_depth_call1", module=self.stochastic_depth):
+                res += self.stochastic_depth(res_fx)
             fx = self.res_norm(fx) if NormPosition.RES_NORM in cfg.norm else fx
-            fx = self.stochastic_depth(self.dropout2(fx))
+            with child_context("ffn_dropout2_call2", module=self.dropout2):
+                fx = self.dropout2(fx)
+            with child_context("ffn_stochastic_depth_call2", module=self.stochastic_depth):
+                fx = self.stochastic_depth(fx)
             if cfg.residual_weight != 1:
                 fx *= cfg.residual_weight
             x = self.out_norm(x + fx) if NormPosition.OUT_NORM in cfg.norm else x + fx
