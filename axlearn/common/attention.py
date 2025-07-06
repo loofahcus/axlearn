@@ -3066,11 +3066,11 @@ class TransformerFeedForwardLayer(BaseLayer):
             fx = self.dropout1(fx)
             fx = _linear2(fx)
             fx = self._remat_name(fx, remat_pt2)
+            res += cfg.residual_weight * self.stochastic_depth(self.dropout2(fx))
             fx = self.res_norm(fx) if NormPosition.RES_NORM in cfg.norm else fx
             fx = self.stochastic_depth(self.dropout2(fx))
             if cfg.residual_weight != 1:
                 fx *= cfg.residual_weight
-            res += fx
             x = self.out_norm(x + fx) if NormPosition.OUT_NORM in cfg.norm else x + fx
             x = jnp.stack([x, res], axis=0)
         else:
