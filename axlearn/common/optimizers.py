@@ -2039,6 +2039,7 @@ def adastar_optimizer(
                 and any(
                     name in map(lambda x: x.key, path) for name in router_orthogonalization_names
                 )
+                and len(param.shape) > 1
             ):
                 w_norm = jnp.sqrt(jnp.square(param.value).sum(axis=-2, keepdims=True))
                 w_normalized = param.value / w_norm
