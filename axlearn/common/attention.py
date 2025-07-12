@@ -2582,6 +2582,8 @@ class TransformerAttentionLayer(BaseLayer):
         # TODO (bwzhang@) Adding a unittest for the hybridnorm.
         # v2: see comments on NormPosition for details.
         structure: str = "prenorm"
+        # The 1-based index of this layer.
+        layer_idx: Optional[int] = None
 
     def __init__(self, cfg: Config, *, parent: Module):
         super().__init__(cfg, parent=parent)
@@ -2723,6 +2725,8 @@ class TransformerAttentionLayer(BaseLayer):
         if cfg.structure == "prenorm":
             skip_input = target  # pre-norm: where normalization happens within the residual part.
             norm_target = self.norm(target)
+            if cfg.layer_idx:
+                norm_target /= cfg.layer_idx**0.5
             atten_state, atten_output = attention_thunk(norm_target)
             data = skip_input + self.stochastic_depth(self.dropout(atten_output.data))
         elif cfg.structure == "postnorm":
@@ -2963,6 +2967,8 @@ class TransformerFeedForwardLayer(BaseLayer):
         # - "linear2_outputs": outputs of linear2.
         # TODO(tlei3): deprecate this feature since we use TensorStats.
         add_value_rms_norm_summary: Sequence[str] = []
+        # The 1-based index of this layer.
+        layer_idx: Optional[int] = None
 
     def __init__(self, cfg: Config, *, parent: Module):
         super().__init__(cfg, parent=parent)
@@ -3038,6 +3044,8 @@ class TransformerFeedForwardLayer(BaseLayer):
         remat_pt2 = "linear2"
         if cfg.structure == "prenorm":
             x = self.norm(inputs)
+            if cfg.layer_idx:
+                x /= cfg.layer_idx**0.5
             x = self._linear1_activation(x)
             x = self.dropout1(x)
             x = _linear2(x)
