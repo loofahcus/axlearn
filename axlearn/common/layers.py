@@ -89,6 +89,8 @@ def get_activation_fn(name) -> Callable[[Tensor], Tensor]:
         return getattr(nn, name[3:])
     elif name.startswith("jnp."):
         return getattr(jnp, name[4:])
+    elif name == "silu+1":
+        return lambda x: nn.silu(x) + 1
     else:
         raise NotImplementedError(f"Unsupported activation function {name}")
 
