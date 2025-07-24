@@ -2620,6 +2620,8 @@ class TransformerAttentionLayer(BaseLayer):
         # TODO (bwzhang@) Adding a unittest for the hybridnorm.
         # v2: see comments on NormPosition for details.
         structure: str = "prenorm"
+        # outputs = inputs + residual_weight * x.
+        residual_weight: Optional[float] = None
 
     def __init__(self, cfg: Config, *, parent: Module):
         super().__init__(cfg, parent=parent)
@@ -2765,25 +2767,35 @@ class TransformerAttentionLayer(BaseLayer):
             skip_input = target  # pre-norm: where normalization happens within the residual part.
             norm_target = self.norm(target)
             atten_state, atten_output = attention_thunk(norm_target)
-            data = skip_input + self.stochastic_depth(self.dropout(atten_output.data))
+            data = self.stochastic_depth(self.dropout(atten_output.data))
+            if cfg.residual_weight is not None and cfg.residual_weight != 1:
+                data *= cfg.residual_weight
+            data = skip_input + data
         elif cfg.structure == "postnorm":
             # This is the structure used by the original Transformer, BERT, and RoBERTa.
             atten_state, atten_output = attention_thunk(target)
             # Post-norm: norm applied on the sum of input and attention output.
-            data = self.norm(target + self.stochastic_depth(self.dropout(atten_output.data)))
+            data = self.stochastic_depth(self.dropout(atten_output.data))
+            if cfg.residual_weight is not None and cfg.residual_weight != 1:
+                data *= cfg.residual_weight
+            data = self.norm(target + data)
         elif cfg.structure == "hybridnorm":
             skip_input = target  # pre-norm: where normalization happens within the residual part.
             norm_target = self.prenorm(target)
             atten_state, atten_output = attention_thunk(norm_target)
-            data = skip_input + self.stochastic_depth(
-                self.dropout(self.postnorm(atten_output.data))
-            )
+            data = self.stochastic_depth(self.dropout(self.postnorm(atten_output.data)))
+            if cfg.residual_weight is not None and cfg.residual_weight != 1:
+                data *= cfg.residual_weight
+            data = skip_input + data
         elif cfg.structure == "v2":
             norm_target = self.in_norm(target) if NormPosition.IN_NORM in cfg.norm else target
             atten_state, atten_output = attention_thunk(norm_target)
             data = atten_output.data
             data = self.res_norm(data) if NormPosition.RES_NORM in cfg.norm else data
-            data = target + self.stochastic_depth(self.dropout(data))
+            data = self.stochastic_depth(self.dropout(data))
+            if cfg.residual_weight is not None and cfg.residual_weight != 1:
+                data *= cfg.residual_weight
+            data = target + data
             data = self.out_norm(data) if NormPosition.OUT_NORM in cfg.norm else data
         else:
             raise NotImplementedError(cfg.structure)
