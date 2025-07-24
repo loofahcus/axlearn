@@ -2964,6 +2964,8 @@ class TransformerFeedForwardLayer(BaseLayer):
         # TODO(tlei3): deprecate this feature since we use TensorStats.
         add_value_rms_norm_summary: Sequence[str] = []
 
+        spark_ffn_ratio: Optional[float] = 0.25
+
     def __init__(self, cfg: Config, *, parent: Module):
         super().__init__(cfg, parent=parent)
         cfg: TransformerFeedForwardLayer.Config = self.config
@@ -2993,9 +2995,15 @@ class TransformerFeedForwardLayer(BaseLayer):
             assert len(cfg.activation) == 2, cfg.activation
             # Create a linear1 projection for each activation.
             for i in range(len(cfg.activation)):
+                if cfg.spark_ffn_ratio:
+                    input_dim = int(cfg.input_dim * cfg.spark_ffn_ratio)
+                    if i > 0:
+                        input_dim = cfg.input_dim - input_dim
+                else:
+                    input_dim = cfg.input_dim
                 self._add_child(
                     f"linear1_{i}",
-                    cfg.linear1.set(input_dim=cfg.input_dim, output_dim=hidden_dim),
+                    cfg.linear1.set(input_dim=input_dim, output_dim=hidden_dim),
                 )
         else:
             assert isinstance(cfg.activation, str), cfg.activation
@@ -3100,13 +3108,19 @@ class TransformerFeedForwardLayer(BaseLayer):
     def _linear1_activation(self, x: Tensor) -> Tensor:
         cfg = self.config
         if isinstance(cfg.activation, tuple):
-            activations = [
-                self._get_activation(
-                    self._remat_name(self.children[f"linear1_{i}"](x), f"linear1_{i}"),
+            activations = []
+            for i, activation in enumerate(cfg.activation):
+                if cfg.spark_ffn_ratio:
+                    input_dim = int(cfg.input_dim * cfg.spark_ffn_ratio)
+                    inputs = x[..., :input_dim] if i == 0 else x[..., input_dim:]
+                else:
+                    inputs = x
+                activation = self._get_activation(
+                    self._remat_name(self.children[f"linear1_{i}"](inputs), f"linear1_{i}"),
                     activation_fn_name=activation,
                 )
-                for i, activation in enumerate(cfg.activation)
-            ]
+                activations.append(activation)
+
             assert len(activations) == 2, cfg.activation
             outputs = activations[0] * activations[1]
             self._add_tensor_stats("linear1_0_outputs", activations[0])
