@@ -125,7 +125,7 @@ pipelines:
       template: freestyle:v4:build
       steps:
         - export SSH_AUTH_SOCK=${SSH_AUTH_SOCK_DEPLOY_KEY}
-        - apt update && apt install -y wget
+        - apt update && apt install -y wget git
         - wget https://github.com/google/copybara/releases/download/v20250721/copybara_deploy.jar
         - java -jar copybara_deploy.jar copy.bara.sky push
 
