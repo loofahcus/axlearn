@@ -4,3 +4,4 @@ Checklist:
 - [ ] PR does not contain confidential information.
 - [ ] Bump PR in https://github.pie.apple.com/foundation-models/ajax passes tests.
 - [ ] Approval from CODEOWNERS.
+- [ ] Approval from @chang-lan or @zfc (legal requirement).
