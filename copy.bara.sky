@@ -90,10 +90,11 @@ core.workflow(
         write_file("CODEOWNERS", external_codeowners),
         metadata.restore_author(),
         metadata.expose_label("COPYBARA_INTEGRATE_REVIEW"),
+        # Keep only commit title (first line), remove description
+        metadata.replace_message(
+            text = "${COPYBARA_CURRENT_MESSAGE_TITLE}"
+        ),
         # Scrub internal PR number.
         metadata.scrubber(r' \(#\d+\)'),
-        # Scrub internal keywords from commit messages.
-        metadata.scrubber("Rio"),
-        metadata.scrubber('(^|\n)CONFIDENTIAL:(.|\n)*')
     ],
 )
