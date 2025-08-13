@@ -9,4 +9,3 @@ chex
 pytest
 wrapt
 optax
-pytype
