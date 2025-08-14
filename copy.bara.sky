@@ -88,12 +88,12 @@ core.workflow(
     transformations = [
         # Write CODEOWNERS file with external_codeowners.
         write_file("CODEOWNERS", external_codeowners),
-        metadata.restore_author(),
-        metadata.expose_label("COPYBARA_INTEGRATE_REVIEW"),
         # Keep only commit title (first line), remove description
         metadata.replace_message(
             text = "${COPYBARA_CURRENT_MESSAGE_TITLE}"
         ),
+        metadata.restore_author(),
+        metadata.expose_label("COPYBARA_INTEGRATE_REVIEW"),
         # Scrub internal PR number.
         metadata.scrubber(r' \(#\d+\)'),
     ],
