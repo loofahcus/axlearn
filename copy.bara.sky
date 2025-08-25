@@ -21,6 +21,16 @@ internal_only_files = [
     "pull_request_template.md",
     "CODEOWNERS",
     "copy.bara.sky",
+    "BUILD.bazel",
+    "BUILD",
+    "**/BUILD.bazel",
+    "**/BUILD",
+    "requirements.in",
+    "requirements_lock.txt",
+    ".bazelrc",
+    ".bazelversion",
+    "MODULE.bazel",
+    "MODULE.bazel.lock",
 ]
 
 external_codeowners = """* @apple/axlearn-admins
