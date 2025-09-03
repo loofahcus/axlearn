@@ -31,6 +31,7 @@ internal_only_files = [
     ".bazelversion",
     "MODULE.bazel",
     "MODULE.bazel.lock",
+    "pytype_bazel/**",
 ]
 
 external_codeowners = """* @apple/axlearn-admins
