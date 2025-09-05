@@ -4,7 +4,7 @@ module(name = "axlearn", version = "0.0.1")
 bazel_dep(name = "apple_federation", version = "0.212.0")
 # END_APPLE
 
-bazel_dep(name = "rules_python", version = "1.5.1")
+bazel_dep(name = "rules_python", version = "1.5.3")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(python_version = "3.12")
