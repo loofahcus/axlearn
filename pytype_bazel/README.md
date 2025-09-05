@@ -46,7 +46,7 @@ load("@rules_python//python:defs.bzl", "py_library", "py_binary", "py_test")
 py_library(
     name = "my_lib",
     srcs = ["my_lib.py"],
-    deps = ["@pip//numpy"],
+    deps = ["@axlearn_pip//numpy"],
 )
 
 # After
@@ -55,7 +55,7 @@ load("//pytype_bazel:pytype.bzl", "pytype_library")
 pytype_library(
     name = "my_lib",
     srcs = ["my_lib.py"],
-    deps = ["@pip//numpy"],
+    deps = ["@axlearn_pip//numpy"],
 )
 ```
 

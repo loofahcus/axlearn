@@ -1,4 +1,4 @@
-load("@pip//:requirements.bzl", "requirement")
+load("@axlearn_pip//:requirements.bzl", "requirement")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 
 def _pytype_check_script_impl(ctx):

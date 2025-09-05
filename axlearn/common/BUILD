@@ -22,8 +22,8 @@ pytype_library(
         ":param_init",
         ":traceback_util",
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -33,9 +33,9 @@ pytype_library(
     visibility = ["//visibility:public"],
     deps = [
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
-        "@pip//tensorstore",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//tensorstore",
     ],
 )
 
@@ -61,10 +61,10 @@ pytype_library(
         ":module",
         ":summary_writer",
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
-        "@pip//msgpack",
-        "@pip//tensorflow",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//msgpack",
+        "@axlearn_pip//tensorflow",
     ],
 )
 
@@ -73,7 +73,7 @@ pytype_library(
     srcs = ["compiler_options.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "@pip//absl_py",
+        "@axlearn_pip//absl_py",
     ],
 )
 
@@ -82,7 +82,7 @@ pytype_library(
     srcs = ["config.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "@pip//attrs",
+        "@axlearn_pip//attrs",
     ],
 )
 
@@ -96,8 +96,8 @@ pytype_library(
         ":ein_ops",
         ":module",
         ":utils",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -109,8 +109,8 @@ pytype_library(
     deps = [
         ":config",
         ":module",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -124,9 +124,9 @@ pytype_library(
         ":optimizer_base",
         ":schedule",
         ":utils",
-        "@pip//jax",
-        "@pip//numpy",
-        "@pip//optax",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//optax",
     ],
 )
 
@@ -135,8 +135,8 @@ pytype_library(
     srcs = ["file_system.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "@pip//absl_py",
-        "@pip//tensorflow",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//tensorflow",
     ],
 )
 
@@ -147,7 +147,7 @@ pytype_library(
     deps = [
         ":config",
         ":utils",
-        "@pip//absl_py",
+        "@axlearn_pip//absl_py",
     ],
 )
 
@@ -165,8 +165,8 @@ pytype_library(
         ":struct",
         ":summary_writer",
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -179,9 +179,9 @@ pytype_library(
         ":file_system",
         ":module",
         ":utils",
-        "@pip//jax",
-        "@pip//numpy",
-        "@pip//tensorflow",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//tensorflow",
     ],
 )
 
@@ -194,8 +194,8 @@ pytype_library(
         ":input_dispatch",
         ":module",
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -207,8 +207,8 @@ pytype_library(
         ":config",
         ":module",
         ":utils",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -218,12 +218,12 @@ pytype_test(
     srcs = ["config_test.py"],
     deps = [
         ":config",
-        "@pip//absl_py",
-        "@pip//attrs",
-        "@pip//jax",
-        "@pip//numpy",
-        "@pip//pytest",
-        "@pip//wrapt",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//attrs",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//pytest",
+        "@axlearn_pip//wrapt",
     ],
 )
 
@@ -256,9 +256,9 @@ pytype_library(
         ":config",
         ":module",
         ":utils",
-        "@pip//aqtp",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//aqtp",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -271,8 +271,8 @@ pytype_library(
         ":config",
         ":module",
         ":utils",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -286,8 +286,8 @@ pytype_library(
         ":module",
         ":normalize",
         ":utils",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -296,7 +296,7 @@ pytype_library(
     srcs = ["normalize.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "@pip//jax",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -313,8 +313,8 @@ pytype_library(
         ":optimizers",
         ":update_transformation",
         ":utils",
-        "@pip//jax",
-        "@pip//optax",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//optax",
     ],
 )
 
@@ -361,8 +361,8 @@ pytype_library(
     deps = [
         ":config",
         ":utils",
-        "@pip//jax",
-        "@pip//optax",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//optax",
     ],
 )
 
@@ -373,10 +373,10 @@ pytype_library(
     deps = [
         ":config",
         ":serialization",
-        "@pip//absl_py",
-        "@pip//attrs",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//attrs",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -388,8 +388,8 @@ pytype_library(
         ":config",
         ":summary",
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -399,7 +399,7 @@ pytype_library(
     visibility = ["//visibility:public"],
     deps = [
         ":config",
-        "@pip//absl_py",
+        "@axlearn_pip//absl_py",
     ],
 )
 
@@ -424,8 +424,8 @@ pytype_library(
     deps = [
         ":base_layer",
         ":utils",
-        "@pip//optax",
-        "@pip//typing_extensions",
+        "@axlearn_pip//optax",
+        "@axlearn_pip//typing_extensions",
     ],
 )
 
@@ -442,11 +442,11 @@ pytype_library(
         ":schedule",
         ":struct",
         ":utils",
-        "@pip//absl_py",
-        "@pip//chex",
-        "@pip//jax",
-        "@pip//optax",
-        "@pip//typing_extensions",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//chex",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//optax",
+        "@axlearn_pip//typing_extensions",
     ],
 )
 
@@ -455,7 +455,7 @@ pytype_library(
     srcs = ["serialization.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "@pip//jax",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -467,11 +467,11 @@ pytype_test(
     deps = [
         ":serialization",
         ":struct",
-        "@pip//absl_py",
-        "@pip//jax",
-        "@pip//numpy",
-        "@pip//optax",
-        "@pip//pytest",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//optax",
+        "@axlearn_pip//pytest",
     ],
 )
 
@@ -482,8 +482,8 @@ pytype_library(
     deps = [
         ":serialization",
         ":utils",
-        "@pip//jax",
-        "@pip//typing_extensions",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//typing_extensions",
     ],
 )
 
@@ -493,11 +493,11 @@ pytype_test(
     srcs = ["struct_test.py"],
     deps = [
         ":struct",
-        "@pip//absl_py",
-        "@pip//chex",
-        "@pip//jax",
-        "@pip//jaxlib",
-        "@pip//pytest",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//chex",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+        "@axlearn_pip//pytest",
     ],
 )
 
@@ -508,8 +508,8 @@ pytype_library(
     deps = [
         ":struct",
         ":utils",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -523,10 +523,10 @@ pytype_library(
         ":module",
         ":summary",
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
-        "@pip//numpy",
-        "@pip//tensorflow",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//tensorflow",
     ],
 )
 
@@ -535,8 +535,8 @@ pytype_library(
     srcs = ["traceback_util.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "@pip//absl_py",
-        "@pip//jax",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -563,9 +563,9 @@ pytype_library(
         ":summary_writer",
         ":update_transformation",
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -581,9 +581,9 @@ pytype_library(
         ":optimizer_base",
         ":struct",
         ":utils",
-        "@pip//absl_py",
-        "@pip//jax",
-        "@pip//optax",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//optax",
     ],
 )
 
@@ -593,7 +593,7 @@ pytype_library(
     visibility = ["//visibility:public"],
     deps = [
         ":utils",
-        "@pip//absl_py",
+        "@axlearn_pip//absl_py",
     ],
 )
 
@@ -602,8 +602,8 @@ pytype_library(
     srcs = ["utils_spmd.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "@pip//jax",
-        "@pip//portpicker",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//portpicker",
     ],
 )
 
@@ -616,8 +616,8 @@ pytype_library(
         ":status_server",
         ":utils",
         ":utils_spmd",
-        "@pip//absl_py",
-        "@pip//jax",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -632,8 +632,8 @@ pytype_library(
         ":trainer",
         ":utils",
         "//axlearn/experiments:__init__",
-        "@pip//absl_py",
-        "@pip//jax",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -650,7 +650,7 @@ pytype_binary(
         "//axlearn/experiments:__init__",
         "//axlearn/experiments:logistic_regression_tutorial",
         # Add other experiment modules here as they get Bazelized
-        "@pip//absl_py",
+        "@axlearn_pip//absl_py",
     ],
 )
 
@@ -662,9 +662,9 @@ pytype_library(
         ":config",
         ":input_base",
         ":utils",
-        "@pip//jax",
-        "@pip//numpy",
-        "@pip//tensorflow",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//tensorflow",
     ],
 )
 
@@ -677,10 +677,10 @@ pytype_library(
         ":input_base",
         ":module",
         ":utils",
-        "@pip//absl_py",
-        "@pip//array_record",
-        "@pip//grain",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//array_record",
+        "@axlearn_pip//grain",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )

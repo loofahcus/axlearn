@@ -6,7 +6,7 @@ pytype_library(
     visibility = ["//visibility:public"],
     deps = [
         "//axlearn/common:config",
-        "@pip//absl_py",
+        "@axlearn_pip//absl_py",
     ],
 )
 
@@ -18,7 +18,7 @@ pytype_library(
     deps = [
         "//axlearn/common:config",
         "//axlearn/common:utils",
-        "@pip//cloudpickle",
+        "@axlearn_pip//cloudpickle",
     ],
 )
 
@@ -30,9 +30,9 @@ pytype_test(
         ":trainer_config_utils",
         "//axlearn/common:config",
         "//axlearn/common:input_fake",
-        "@pip//absl_py",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -48,11 +48,11 @@ pytype_library(
         "//axlearn/common:summary_writer",
         "//axlearn/common:trainer",
         "//axlearn/common:utils",
-        "@pip//absl_py",
-        "@pip//chex",
-        "@pip//jax",
-        "@pip//numpy",
-        "@pip//pytest",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//chex",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//pytest",
     ],
 )
 
@@ -76,8 +76,8 @@ pytype_library(
         "//axlearn/common:schedule",
         "//axlearn/common:trainer",
         "//axlearn/common:utils",
-        "@pip//jax",
-        "@pip//numpy",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
