@@ -1,5 +1,32 @@
 load("//pytype_bazel:pytype.bzl", "pytype_binary", "pytype_library", "pytype_test")
 
+# Main common library that includes commonly used modules
+pytype_library(
+    name = "common",
+    srcs = [],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":base_model",
+        ":config",
+        ":ein_ops",
+        ":input_base",
+        ":input_fake",
+        ":input_lm",
+        ":input_tf_data",
+        ":layers",
+        ":learner",
+        ":module",
+        ":optimizer_base",
+        ":optimizers",
+        ":param_init",
+        ":schedule",
+        ":trainer",
+        ":utils",
+    ],
+)
+
 pytype_library(
     name = "attention",
     srcs = ["attention.py"],
@@ -682,5 +709,66 @@ pytype_library(
         "@axlearn_pip//grain",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "aot_compilation",
+    srcs = ["aot_compilation.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+    ],
+)
+
+pytype_library(
+    name = "input_lm",
+    srcs = ["input_lm.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":input_base",
+        ":config",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//tensorflow",
+    ],
+)
+
+pytype_library(
+    name = "input_tf_data",
+    srcs = ["input_tf_data.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":input_base",
+        ":config",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//tensorflow",
+    ],
+)
+
+pytype_library(
+    name = "mixture_of_experts",
+    srcs = ["mixture_of_experts.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":layers",
+        ":module",
+        ":config",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+    ],
+)
+
+pytype_library(
+    name = "test_utils",
+    srcs = ["test_utils.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":module",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
