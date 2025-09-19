@@ -189,7 +189,7 @@ pytype_library(
         ":input_base",
         ":metrics",
         ":module",
-        ":struct",
+        ":flax_struct",
         ":summary_writer",
         ":utils",
         "@axlearn_pip//absl_py",
@@ -437,7 +437,7 @@ pytype_library(
     visibility = ["//visibility:public"],
     deps = [
         ":config",
-        ":struct",
+        ":flax_struct",
         ":summary",
         ":traceback_util",
         ":utils",
@@ -467,7 +467,7 @@ pytype_library(
         ":module",
         ":optimizer_base",
         ":schedule",
-        ":struct",
+        ":flax_struct",
         ":utils",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//chex",
@@ -493,7 +493,7 @@ pytype_test(
     enable_pytype = False,  # Type error: No attribute 'replace' on _Box
     deps = [
         ":serialization",
-        ":struct",
+        ":flax_struct",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
@@ -503,8 +503,8 @@ pytype_test(
 )
 
 pytype_library(
-    name = "struct",
-    srcs = ["struct.py"],
+    name = "flax_struct",
+    srcs = ["flax_struct.py"],
     visibility = ["//visibility:public"],
     deps = [
         ":serialization",
@@ -515,11 +515,11 @@ pytype_library(
 )
 
 pytype_test(
-    name = "struct_test",
+    name = "flax_struct_test",
     size = "small",
-    srcs = ["struct_test.py"],
+    srcs = ["flax_struct_test.py"],
     deps = [
-        ":struct",
+        ":flax_struct",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//chex",
         "@axlearn_pip//jax",
@@ -533,7 +533,7 @@ pytype_library(
     srcs = ["summary.py"],
     visibility = ["//visibility:public"],
     deps = [
-        ":struct",
+        ":flax_struct",
         ":utils",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
@@ -606,7 +606,7 @@ pytype_library(
         ":learner_base",
         ":module",
         ":optimizer_base",
-        ":struct",
+        ":flax_struct",
         ":utils",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
