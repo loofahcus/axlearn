@@ -25,11 +25,13 @@ pytype_library(
 pytype_test(
     name = "trainer_config_utils_test",
     srcs = ["trainer_config_utils_test.py"],
-    enable_pytype = False,  # flash_attention.layer not yet in BUILD system
     deps = [
         ":trainer_config_utils",
         "//axlearn/common:config",
         "//axlearn/common:input_fake",
+        "//axlearn/common:trainer_test_lib",
+        "//axlearn/common/flash_attention:layer",
+        "//axlearn/common/flash_attention:layer_test_lib",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",

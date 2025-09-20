@@ -32,9 +32,35 @@ pytype_library(
     srcs = ["attention.py"],
     visibility = ["//visibility:public"],
     deps = [
+        ":attention_bias",
+        ":base_layer",
         ":config",
+        ":layers",
         ":module",
+        ":param_init",
+        ":pipeline",
+        ":repeat",
         ":utils",
+        "//axlearn/common/flash_attention:remat",
+        "//axlearn/common/kv_cache:base_kv_cache",
+        "//axlearn/common/kv_cache:kv_cache",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "attention_bias",
+    srcs = ["attention_bias.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":flax_struct",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+        "@axlearn_pip//numpy",
     ],
 )
 
@@ -369,6 +395,36 @@ pytype_library(
 )
 
 pytype_library(
+    name = "pipeline",
+    srcs = ["pipeline.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":config",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "repeat",
+    srcs = ["repeat.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":config",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
     name = "state_builder",
     srcs = ["state_builder.py"],
     enable_pytype = False,  # Missing imports and type annotation errors
@@ -514,9 +570,8 @@ pytype_library(
     ],
 )
 
-pytype_test(
-    name = "flax_struct_test",
-    size = "small",
+pytype_library(
+    name = "flax_struct_test_lib",
     srcs = ["flax_struct_test.py"],
     deps = [
         ":flax_struct",
@@ -525,6 +580,15 @@ pytype_test(
         "@axlearn_pip//jax",
         "@axlearn_pip//jaxlib",
         "@axlearn_pip//pytest",
+    ],
+)
+
+pytype_test(
+    name = "flax_struct_test",
+    size = "small",
+    srcs = ["flax_struct_test.py"],
+    deps = [
+        ":flax_struct_test_lib",
     ],
 )
 
@@ -633,6 +697,86 @@ pytype_library(
         "@axlearn_pip//portpicker",
     ],
 )
+
+pytype_library(
+    name = "debug_utils",
+    srcs = ["debug_utils.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+    ],
+)
+
+pytype_library(
+    name = "gradient_accumulation",
+    srcs = ["gradient_accumulation.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":config",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+    ],
+)
+
+pytype_library(
+    name = "trainer_config_modifier",
+    srcs = ["trainer_config_modifier.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":gradient_accumulation",
+        ":module",
+        ":trainer",
+        ":utils",
+        "@axlearn_pip//jax",
+    ],
+)
+
+pytype_library(
+    name = "trainer_test_lib",
+    srcs = ["trainer_test.py"],
+    testonly = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":base_model",
+        ":config",
+        ":debug_utils",
+        ":layers",
+        ":learner",
+        ":module",
+        ":optimizer_base",
+        ":optimizers",
+        ":schedule",
+        ":test_utils",
+        ":trainer",
+        ":trainer_config_modifier",
+        ":utils",
+        ":flax_struct_test_lib",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+# Commented out due to timeout issues - test takes too long to run
+# TODO: Re-enable after optimizing test execution time
+# pytype_test(
+#     name = "trainer_test",
+#     srcs = ["trainer_test.py"],
+#     visibility = ["//visibility:public"],
+#     deps = [
+#         ":trainer_test_lib",
+#     ],
+# )
 
 pytype_library(
     name = "launch",
@@ -767,8 +911,17 @@ pytype_library(
     visibility = ["//visibility:public"],
     deps = [
         ":module",
+        ":optimizers",
+        ":schedule",
         ":utils",
+        ":utils_spmd",
+        ":base_model",
+        ":base_layer",
+        ":learner",
+        ":trainer",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
+        "@axlearn_pip//jaxlib",
+        "@axlearn_pip//numpy",
     ],
 )
