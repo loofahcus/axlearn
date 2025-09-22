@@ -155,6 +155,69 @@ pytype_library(
 )
 
 pytype_library(
+    name = "logit_modifiers",
+    srcs = ["logit_modifiers.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "decoding",
+    srcs = ["decoding.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":config",
+        ":layers",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "embedding",
+    srcs = ["embedding.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":config",
+        ":layers",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "decoder",
+    srcs = ["decoder.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":config",
+        ":decoding",
+        ":embedding",
+        ":layers",
+        ":logit_modifiers",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
     name = "ein_ops",
     srcs = ["ein_ops.py"],
     enable_pytype = False,  # Complex dependencies
@@ -292,26 +355,7 @@ pytype_library(
         ":metrics_classification",
         ":module",
         ":param_init",
-        ":quantized_dot_general_layers",
-    ],
-)
-
-pytype_library(
-    name = "quantized_dot_general_layers",
-    srcs = [
-        "quantized_dot_general/activation_clipping.py",
-        "quantized_dot_general/layers.py",
-        "quantized_dot_general/utils.py",
-    ],
-    enable_pytype = False,  # Complex dependencies
-    visibility = ["//visibility:public"],
-    deps = [
-        ":config",
-        ":module",
-        ":utils",
-        "@axlearn_pip//aqtp",
-        "@axlearn_pip//jax",
-        "@axlearn_pip//numpy",
+        "//axlearn/common/quantized_dot_general",
     ],
 )
 
