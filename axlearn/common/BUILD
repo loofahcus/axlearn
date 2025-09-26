@@ -130,6 +130,19 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "compiler_options_test",
+    srcs = ["compiler_options_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":compiler_options",
+        ":test_utils",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+    ],
+)
+
 pytype_library(
     name = "config",
     srcs = ["config.py"],
