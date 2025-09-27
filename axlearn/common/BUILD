@@ -127,6 +127,19 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "array_serialization_test",
+    srcs = ["array_serialization_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":array_serialization",
+        "@axlearn_pip//absl_py",
+	"@axlearn_pip//pytest",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//tensorstore",
+    ],
+)
+
 pytype_library(
     name = "base_model",
     srcs = ["base_model.py"],
