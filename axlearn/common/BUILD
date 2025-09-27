@@ -201,6 +201,23 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "config_test",
+    size = "small",
+    srcs = ["config_test.py"],
+    deps = [
+        ":config",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//attrs",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//pytest",
+        "@axlearn_pip//wrapt",
+    ],
+)
+
+# NOTE (wyi): I haven’t added the convolution_test target because it verifies the JAX-based
+# attention implementation by parity-checking against PyTorch's Conv_D.
 pytype_library(
     name = "convolution",
     srcs = ["convolution.py"],
@@ -226,6 +243,19 @@ pytype_library(
         ":utils",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_test(
+    name = "logit_modifiers_test",
+    srcs = ["logit_modifiers_test.py"],
+    deps = [
+        ":logit_modifiers",
+        ":decoding",
+        ":test_utils",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -387,21 +417,6 @@ pytype_library(
         ":utils",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
-    ],
-)
-
-pytype_test(
-    name = "config_test",
-    size = "small",
-    srcs = ["config_test.py"],
-    deps = [
-        ":config",
-        "@axlearn_pip//absl_py",
-        "@axlearn_pip//attrs",
-        "@axlearn_pip//jax",
-        "@axlearn_pip//numpy",
-        "@axlearn_pip//pytest",
-        "@axlearn_pip//wrapt",
     ],
 )
 
