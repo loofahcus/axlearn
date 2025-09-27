@@ -27,6 +27,12 @@ pytype_library(
     ],
 )
 
+# NOTE (wyi): I haven’t added the attention_test target because attention_test.py verifies the
+# JAX-based attention implementation by parity-checking against HuggingFace Transformers. Defining
+# an attention_test target would therefore require adding both PyTorch and HuggingFace Transformers
+# to requirements.in. A possible alternative might be to remove the parity check and instead
+# validate mathematical properties of attention, but I’m not sure if that would be a better
+# approach.
 pytype_library(
     name = "attention",
     srcs = ["attention.py"],
@@ -64,6 +70,20 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "attention_bias_test",
+    srcs = ["attention_bias_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention_bias",
+        ":test_utils",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//chex",
+        "@axlearn_pip//jax",
+    ],
+)
+
 pytype_library(
     name = "base_layer",
     srcs = ["base_layer.py"],
@@ -74,6 +94,21 @@ pytype_library(
         ":module",
         ":param_init",
         ":traceback_util",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+    ],
+)
+
+pytype_test(
+    name = "base_layer_test",
+    srcs = ["base_layer_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":config",
+        ":module",
+        ":test_utils",
         ":utils",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
@@ -99,6 +134,7 @@ pytype_library(
     deps = [
         ":base_layer",
         ":module",
+        ":param_init",
     ],
 )
 
