@@ -228,8 +228,8 @@ pytype_library(
 
 pytype_library(
     name = "test_utils",
-    srcs = ["test_utils.py"],
     testonly = True,
+    srcs = ["test_utils.py"],
     deps = [
         ":common",
         ":layer",
@@ -266,8 +266,8 @@ pytype_library(
 
 pytype_library(
     name = "layer_test_lib",
-    srcs = ["layer_test.py"],
     testonly = True,  # Added testonly since it depends on test_utils
+    srcs = ["layer_test.py"],
     deps = [
         ":layer",
         ":test_utils",
@@ -278,7 +278,7 @@ pytype_library(
         "//axlearn/common:module",
         "//axlearn/common:test_utils",
         "//axlearn/common:utils",
-        "//axlearn/common/kv_cache:kv_cache",
+        "//axlearn/common/kv_cache",
         "//axlearn/common/kv_cache:sliding_window_kv_cache",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
@@ -375,6 +375,7 @@ pytype_test(
 # Benchmarks
 pytype_binary(
     name = "gpu_attention_benchmark",
+    testonly = True,
     srcs = ["gpu_attention_benchmark.py"],
     deps = [
         ":gpu_attention",
@@ -389,6 +390,7 @@ pytype_binary(
 
 pytype_binary(
     name = "tpu_attention_benchmark",
+    testonly = True,
     srcs = ["tpu_attention_benchmark.py"],
     deps = [
         ":test_utils",

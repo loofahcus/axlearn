@@ -18,8 +18,8 @@ pytype_library(
         "//axlearn/common:layers",
         "//axlearn/common:mixture_of_experts",
         "//axlearn/common:module",
-        "//axlearn/common:quantized_dot_general_layers",
         "//axlearn/common:test_utils",
         "//axlearn/common:utils",
+        "//axlearn/common/quantized_dot_general:layers",
     ],
 )
