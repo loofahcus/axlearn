@@ -7,8 +7,8 @@ bazel_dep(name = "apple_federation", version = "0.212.0")
 bazel_dep(name = "rules_python", version = "1.5.3")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
-python.toolchain(python_version = "3.10")
+python.toolchain(python_version = "3.12")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
-pip.parse(hub_name = "axlearn_pip", python_version = "3.10", requirements_lock = "//:requirements_lock.txt")
+pip.parse(hub_name = "axlearn_pip", python_version = "3.12", requirements_lock = "//:requirements_lock.txt")
 use_repo(pip, "axlearn_pip")

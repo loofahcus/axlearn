@@ -1013,6 +1013,49 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "input_tf_data_test",
+    srcs = ["input_tf_data_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":checkpointer",
+        ":config",
+        ":input_dispatch",
+        ":input_fake",
+        ":input_tf_data",
+        ":test_utils",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//pytest",
+        "@axlearn_pip//seqio",
+        "@axlearn_pip//tensorflow",
+        "@axlearn_pip//tensorflow_datasets",
+    ],
+)
+
+pytype_test(
+    name = "input_tf_data_gcs_test",
+    srcs = ["input_tf_data_gcs_test.py"],
+    # These tests require GCS authentication to access dataset metadata.
+    # Run with: bazel test --test_tag_filters=gs_login //...
+    # Skip with: bazel test --test_tag_filters=-gs_login //...
+    tags = [
+        "gs_login",
+        "manual",
+    ],  # manual = not included in //... by default
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":input_tf_data",
+        ":test_utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//pytest",
+        "@axlearn_pip//tensorflow_datasets",
+    ],
+)
+
 pytype_library(
     name = "mixture_of_experts",
     srcs = ["mixture_of_experts.py"],
