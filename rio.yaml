@@ -72,6 +72,8 @@ pipelines:
     build:
       template: freestyle:v4:prb
       steps:
+        # Install SSH client for git operations
+        - apt-get update && apt-get install -y openssh-client
         # CI testing content is kept on apple-ci branch to minimize the amount
         # of changes developers may see in their pull-requests having to do only
         # with CI testing as they become out-of-date with main branch.
