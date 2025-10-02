@@ -989,6 +989,17 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "aot_compilation_test",
+    srcs = ["aot_compilation_test.py"],
+    deps = [
+        ":aot_compilation",
+        ":test_utils",
+        ":utils",
+        "@axlearn_pip//absl_py",
+    ],
+)
+
 pytype_library(
     name = "input_lm",
     srcs = ["input_lm.py"],
@@ -1066,6 +1077,24 @@ pytype_library(
         ":module",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
+    ],
+)
+
+pytype_test(
+    name = "mixture_of_experts_test",
+    srcs = ["mixture_of_experts_test.py"],
+    deps = [
+        ":attention",
+        ":layers",
+        ":mixture_of_experts",
+        ":module",
+        ":test_utils",
+        ":utils",
+        "//axlearn/common/quantized_dot_general:activation_clipping",
+        "//axlearn/common/quantized_dot_general:layers",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
     ],
 )
 
