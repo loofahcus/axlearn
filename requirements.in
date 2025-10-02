@@ -19,3 +19,4 @@ array-record
 tensorstore
 aqtp
 seqio
+nltk

@@ -1007,8 +1007,44 @@ pytype_library(
     deps = [
         ":config",
         ":input_base",
+        ":input_text",
+        ":input_tf_data",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//tensorflow",
+    ],
+)
+
+pytype_test(
+    name = "input_lm_test",
+    srcs = ["input_lm_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":input_fake",
+        ":input_lm",
+        ":input_test_utils",
+        ":input_tf_data",
+        ":test_utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//seqio",
+        "@axlearn_pip//tensorflow",
+        "@axlearn_pip//tensorflow_datasets",
+    ],
+)
+
+pytype_library(
+    name = "input_text",
+    srcs = ["input_text.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":input_tf_data",
+        ":utils",
+        "@axlearn_pip//nltk",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//seqio",
+        "@axlearn_pip//tensorflow",
+        "@axlearn_pip//tensorflow_text",
     ],
 )
 
@@ -1020,6 +1056,16 @@ pytype_library(
         ":config",
         ":input_base",
         "@axlearn_pip//absl_py",
+        "@axlearn_pip//tensorflow",
+    ],
+)
+
+pytype_library(
+    name = "input_test_utils",
+    srcs = ["input_test_utils.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":input_tf_data",
         "@axlearn_pip//tensorflow",
     ],
 )
