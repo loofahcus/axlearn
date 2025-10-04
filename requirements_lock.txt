@@ -213,7 +213,9 @@ optax==0.2.6
 optree==0.17.0
     # via keras
 orbax-checkpoint==0.11.25
-    # via flax
+    # via
+    #   -r requirements.in
+    #   flax
 packaging==25.0
     # via
     #   clu

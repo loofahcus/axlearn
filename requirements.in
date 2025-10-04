@@ -20,3 +20,4 @@ tensorstore
 aqtp
 seqio
 nltk
+orbax_checkpoint

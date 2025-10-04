@@ -171,6 +171,56 @@ pytype_library(
 )
 
 pytype_library(
+    name = "checkpointer_orbax",
+    srcs = ["checkpointer_orbax.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":checkpointer",
+        ":module",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//orbax_checkpoint",
+        "@axlearn_pip//tensorflow",
+    ],
+)
+
+pytype_test(
+    name = "checkpointer_test",
+    srcs = ["checkpointer_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":checkpointer",
+        ":array_serialization",
+        ":file_system",
+        ":serialization",
+        ":checkpointer_orbax",
+        ":metrics",
+        ":summary_writer",
+        ":utils",
+        ":test_utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//tensorflow",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//orbax_checkpoint",
+    ],
+)
+
+pytype_test(
+    name = "checkpointer_orbax_test",
+    srcs = ["checkpointer_orbax_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":checkpointer",
+        ":checkpointer_orbax",
+        ":test_utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//orbax_checkpoint",
+    ],
+)
+
+pytype_library(
     name = "compiler_options",
     srcs = ["compiler_options.py"],
     visibility = ["//visibility:public"],
