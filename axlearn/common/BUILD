@@ -175,8 +175,8 @@ pytype_library(
     srcs = ["checkpointer_orbax.py"],
     visibility = ["//visibility:public"],
     deps = [
-        ":config",
         ":checkpointer",
+        ":config",
         ":module",
         ":utils",
         "@axlearn_pip//absl_py",
@@ -191,19 +191,19 @@ pytype_test(
     srcs = ["checkpointer_test.py"],
     visibility = ["//visibility:public"],
     deps = [
-        ":checkpointer",
         ":array_serialization",
-        ":file_system",
-        ":serialization",
+        ":checkpointer",
         ":checkpointer_orbax",
+        ":file_system",
         ":metrics",
+        ":serialization",
         ":summary_writer",
-        ":utils",
         ":test_utils",
+        ":utils",
         "@axlearn_pip//absl_py",
-        "@axlearn_pip//tensorflow",
         "@axlearn_pip//jax",
         "@axlearn_pip//orbax_checkpoint",
+        "@axlearn_pip//tensorflow",
     ],
 )
 
@@ -1024,6 +1024,44 @@ pytype_library(
         "@axlearn_pip//grain",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_test(
+    name = "input_grain_test",
+    srcs = ["input_grain_test.py"],
+    deps = [
+        ":config",
+        ":input_dispatch",
+        ":input_fake",
+        ":input_grain",
+        ":test_utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//grain",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_test(
+    name = "input_grain_tpu_test",
+    srcs = ["input_grain_tpu_test.py"],
+    tags = [
+        "manual",
+        "tpu",
+    ],
+    deps = [
+        ":config",
+        ":input_dispatch",
+        ":input_grain",
+        ":test_utils",
+        ":utils",
+        ":utils_spmd",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//grain",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//pytest",
     ],
 )
 
