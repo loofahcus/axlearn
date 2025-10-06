@@ -457,6 +457,21 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "input_base_test",
+    srcs = ["input_base_test.py"],
+    deps = [
+        ":input_base",
+        ":input_dispatch",
+        ":test_utils",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//pytest",
+    ],
+)
+
 pytype_library(
     name = "input_dispatch",
     srcs = ["input_dispatch.py"],
