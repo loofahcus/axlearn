@@ -325,6 +325,20 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "decoding_test",
+    srcs = ["decoding_test.py"],
+    deps = [
+        ":decoding",
+        ":test_utils",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//sentencepiece",
+    ],
+)
+
 pytype_library(
     name = "embedding",
     srcs = ["embedding.py"],
