@@ -203,6 +203,7 @@ pytype_test(
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
         "@axlearn_pip//orbax_checkpoint",
+        "@axlearn_pip//pytest",
         "@axlearn_pip//tensorflow",
     ],
 )
@@ -366,6 +367,56 @@ pytype_library(
         ":embedding",
         ":layers",
         ":logit_modifiers",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_test(
+    name = "decoder_test",
+    size = "enormous",
+    srcs = ["decoder_test.py"],
+    deps = [
+        ":attention",
+        ":attention_bias",
+        ":base_layer",
+        ":causal_lm",
+        ":config",
+        ":decoder",
+        ":decoding",
+        ":embedding",
+        ":layers",
+        ":logit_modifiers",
+        ":module",
+        ":test_utils",
+        ":utils",
+        "//axlearn/common/flash_attention:layer",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//chex",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "causal_lm",
+    srcs = ["causal_lm.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":base_model",
+        ":config",
+        ":decoder",
+        ":decoding",
+        ":embedding",
+        ":layers",
+        ":logit_modifiers",
+        ":loss",
+        ":loss_metrics",
+        ":metrics",
         ":module",
         ":utils",
         "@axlearn_pip//jax",
@@ -541,6 +592,17 @@ pytype_library(
         ":utils",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "loss_metrics",
+    srcs = ["loss_metrics.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":metrics",
+        ":utils",
     ],
 )
 
