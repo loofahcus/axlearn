@@ -141,6 +141,21 @@ pytype_test(
 )
 
 pytype_library(
+    name = "base_encoder_decoder",
+    srcs = ["base_encoder_decoder.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":base_model",
+        ":config",
+        ":decoding",
+        ":logit_modifiers",
+        ":utils",
+    ],
+)
+
+pytype_library(
     name = "base_model",
     srcs = ["base_model.py"],
     visibility = ["//visibility:public"],
@@ -270,6 +285,27 @@ pytype_test(
 # NOTE (wyi): I haven’t added the convolution_test target because it verifies the JAX-based
 # attention implementation by parity-checking against PyTorch's Conv_D.
 pytype_library(
+    name = "bert",
+    srcs = ["bert.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":config",
+        ":embedding",
+        ":encoder",
+        ":layers",
+        ":loss",
+        ":module",
+        ":param_init",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
     name = "convolution",
     srcs = ["convolution.py"],
     enable_pytype = False,  # Complex dependencies
@@ -356,6 +392,26 @@ pytype_library(
 )
 
 pytype_library(
+    name = "deberta",
+    srcs = ["deberta.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":bert",
+        ":config",
+        ":embedding",
+        ":encoder",
+        ":layers",
+        ":module",
+        ":param_init",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
     name = "decoder",
     srcs = ["decoder.py"],
     visibility = ["//visibility:public"],
@@ -369,6 +425,117 @@ pytype_library(
         ":logit_modifiers",
         ":module",
         ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "encoder",
+    srcs = ["encoder.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":base_model",
+        ":config",
+        ":embedding",
+        ":layers",
+        ":module",
+        ":param_init",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "encoder_decoder",
+    srcs = ["encoder_decoder.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention_bias",
+        ":base_encoder_decoder",
+        ":config",
+        ":decoder",
+        ":decoding",
+        ":encoder",
+        ":logit_modifiers",
+        ":loss",
+        ":metrics",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "t5",
+    srcs = ["t5.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":config",
+        ":decoder",
+        ":encoder",
+        ":encoder_decoder",
+        ":layers",
+        ":module",
+        ":param_init",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "text_encoder",
+    srcs = ["text_encoder.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":config",
+        ":encoder",
+        ":module",
+        ":poolings",
+        ":utils",
+    ],
+)
+
+pytype_library(
+    name = "distilbert",
+    srcs = ["distilbert.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":bert",
+        ":config",
+        ":layers",
+        ":poolings",
+        ":text_encoder",
+    ],
+)
+
+pytype_library(
+    name = "dit",
+    srcs = ["dit.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":config",
+        ":ein_ops",
+        ":layers",
+        ":module",
+        ":utils",
+        "@axlearn_pip//chex",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
     ],
@@ -421,6 +588,40 @@ pytype_library(
         ":utils",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_test(
+    name = "causal_lm_test",
+    srcs = ["causal_lm_test.py"],
+    env = {
+        "CUDA_VISIBLE_DEVICES": "",
+        "USE_CUDA": "0",
+        "FORCE_CUDA": "0",
+        "TORCH_CUDA_ARCH_LIST": "",
+    },
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":causal_lm",
+        ":config",
+        ":learner",
+        ":loss",
+        ":loss_metrics",
+        ":metrics",
+        ":module",
+        ":optimizer_base",
+        ":optimizers",
+        ":param_converter",
+        ":param_init",
+        ":test_utils",
+        ":torch_utils",
+        ":update_transformation",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//transformers",
     ],
 )
 
@@ -653,6 +854,57 @@ pytype_library(
     deps = [
         ":config",
         ":module",
+    ],
+)
+
+pytype_library(
+    name = "poolings",
+    srcs = ["poolings.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":attention_bias",
+        ":base_layer",
+        ":config",
+        ":layers",
+        ":module",
+        ":utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "param_converter",
+    srcs = ["param_converter.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":bert",
+        ":causal_lm",
+        ":config",
+        ":convolution",
+        ":deberta",
+        ":decoder",
+        ":distilbert",
+        ":dit",
+        ":embedding",
+        ":encoder",
+        ":encoder_decoder",
+        ":layers",
+        ":module",
+        ":t5",
+        ":text_encoder",
+        ":utils",
+        "//axlearn/huggingface:hf_text_encoder",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//timm",
+        "@axlearn_pip//torch",
+        "@axlearn_pip//transformers",
     ],
 )
 
@@ -1341,5 +1593,20 @@ pytype_library(
         "@axlearn_pip//jax",
         "@axlearn_pip//jaxlib",
         "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "torch_utils",
+    srcs = ["torch_utils.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_layer",
+        ":layers",
+        ":param_converter",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//torch",
     ],
 )
