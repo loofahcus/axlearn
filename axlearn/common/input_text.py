@@ -334,7 +334,7 @@ def infer_bos_id(vocab: seqio.SentencePieceVocabulary) -> int:
         ValueError: if no viable BOS token ID can be inferred.
     """
     # Use EOS as prompt if no BOS is available.
-    bos_id = vocab.eos_id if vocab.tokenizer.bos_id() == -1 else vocab.tokenizer.bos_id()
+    bos_id = vocab.eos_id if vocab.bos_id == -1 else vocab.bos_id
     if bos_id == -1:
         raise ValueError(f"Cannot infer viable bos_id from seqio vocabulary: {vocab}")
     return bos_id
