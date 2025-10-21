@@ -201,6 +201,39 @@ pytype_library(
     ],
 )
 
+pytype_library(
+    name = "checkpointer_orbax_emergency",
+    srcs = ["checkpointer_orbax_emergency.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":checkpointer",
+        ":config",
+        ":file_system",
+        ":module",
+        ":utils",
+        ":utils_spmd",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//orbax_checkpoint",
+        "@axlearn_pip//tensorflow",
+    ],
+)
+
+pytype_test(
+    name = "checkpointer_orbax_emergency_test",
+    srcs = ["checkpointer_orbax_emergency_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":checkpointer_orbax_emergency",
+        ":utils_spmd",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//orbax_checkpoint",
+        "@axlearn_pip//tensorflow",
+    ],
+)
+
 pytype_test(
     name = "checkpointer_test",
     srcs = ["checkpointer_test.py"],
@@ -1608,5 +1641,19 @@ pytype_library(
         ":utils",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//torch",
+    ],
+)
+
+pytype_library(
+    name = "vocabulary_bpe",
+    srcs = ["vocabulary_bpe.py"],
+    enable_pytype = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        "@axlearn_pip//regex",
+        "@axlearn_pip//sentencepiece",
+        "@axlearn_pip//seqio",
+        "@axlearn_pip//tensorflow",
+        "@axlearn_pip//tensorflow_text",
     ],
 )
