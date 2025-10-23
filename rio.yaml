@@ -157,3 +157,94 @@ pipelines:
         - git fetch origin && git checkout origin/apple-rio -- publish.sh
         # Publishes using the pyproject version in main.
         - ./publish.sh --repository=pypi
+
+  # Merge queue cpu tests
+  - group: unit-tests-cpu
+    branchRules:
+      includePatterns:
+        - "main"
+    machine:
+      baseImage: docker.apple.com/base-images/ubi8/python3.9-builder
+      env:
+        DOCKER_BUILDKIT: "1"
+    secrets:
+      names:
+        - mlinfrasys-env
+        - rio-api-creds
+        - GITHUB_KEY
+        - datadog-env
+    trigger:
+      gitPush: false
+    build:
+      template: freestyle:v4:build
+      buildParameters:
+        - parameter: MERGE_QUEUE_BRANCH
+          defaultValue: ""
+      steps:
+        - git fetch origin apple-ci
+        - git merge --no-verify --no-commit --ff --allow-unrelated-histories -X ours origin/apple-ci
+        - source ci/maybe_setup_for_merge_queue.sh
+        - "true"
+    package:
+      dockerfile:
+        - dockerfilePath: Dockerfile
+          perApplication: false
+          target: ci
+          env:
+            TARGET: ci
+          context: .
+          version: ci-mq-${GIT_BRANCH}-${GIT_HASH}
+
+  # Merge queue gpu tests
+  - group: unit-tests-gpu
+    branchRules:
+      includePatterns:
+        - "main"
+    machine:
+      baseImage: docker.apple.com/base-images/ubi9/python3.10-builder:latest
+    secrets:
+      names:
+        - mlinfrasys-env
+        - rio-api-creds
+        - GITHUB_KEY
+        - datadog-env
+    build:
+      template: freestyle:v4:publish
+      buildParameters:
+        - parameter: MERGE_QUEUE_BRANCH
+          defaultValue: ""
+      steps:
+      - git fetch origin apple-ci
+      - git merge --no-verify --no-commit --ff --allow-unrelated-histories -X ours origin/apple-ci
+      - source ci/maybe_setup_for_merge_queue.sh
+      - bash ci/run_tests.sh axlearn_unit_tests --platform=gpu --use-bastion
+
+  # Merge queue tpu tests
+  - group: unit-tests-tpu
+    branchRules:
+      includePatterns:
+        - "main"
+    machine:
+      baseImage: docker.apple.com/ajax/base:latest
+    secrets:
+      names:
+        - mlinfrasys-env
+        - gcp-luna-dev-appleconnect
+        - rio-api-creds
+        - GITHUB_KEY
+        - datadog-env
+    build:
+      template: freestyle:v4:publish
+      buildParameters:
+        - parameter: MERGE_QUEUE_BRANCH
+          defaultValue: ""
+      steps:
+      # Install SSH client for git operations
+      - apt-get update && apt-get install -y openssh-client
+      # CI testing content is kept on apple-ci branch to minimize the amount
+      # of changes developers may see in their pull-requests having to do only
+      # with CI testing as they become out-of-date with main branch.
+      - git fetch origin apple-ci
+      - git merge --no-verify --no-commit --ff --allow-unrelated-histories -X ours origin/apple-ci
+      - source ci/maybe_setup_for_merge_queue.sh
+      - bash ci/run_tests.sh axlearn_tpu_unit_tests --platform=tpu
