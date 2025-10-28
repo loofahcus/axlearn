@@ -5,6 +5,9 @@ pytype_library(
     srcs = ["utils.py"],
     visibility = ["//visibility:public"],
     deps = [
+        "//axlearn/cloud:cloud",
+        "//axlearn/cloud/gcp:tpu",
+        ":types",
         "@axlearn_pip//absl_py",
     ],
 )

@@ -25,3 +25,5 @@ torch
 transformers
 timm
 hypothesis
+ml_goodput_measurement
+psutil

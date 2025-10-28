@@ -31,13 +31,17 @@ array-record==0.8.1
     # via
     #   -r requirements.in
     #   grain
+    #   tensorflow-datasets
 astunparse==1.6.3
     # via tensorflow
 attrs==25.4.0
     # via
     #   -r requirements.in
     #   dm-tree
+    #   hypothesis
     #   pytype
+cachetools==6.2.1
+    # via google-auth
 certifi==2025.10.5
     # via requests
 charset-normalizer==3.4.3
@@ -89,16 +93,55 @@ fsspec==2025.9.0
     #   torch
 gast==0.6.0
     # via tensorflow
+google-api-core[grpc]==2.28.0
+    # via
+    #   google-cloud-appengine-logging
+    #   google-cloud-core
+    #   google-cloud-logging
+    #   google-cloud-monitoring
+    #   ml-goodput-measurement
+google-auth==2.42.0
+    # via
+    #   google-api-core
+    #   google-cloud-appengine-logging
+    #   google-cloud-core
+    #   google-cloud-logging
+    #   google-cloud-monitoring
+google-cloud-appengine-logging==1.7.0
+    # via google-cloud-logging
+google-cloud-audit-log==0.4.0
+    # via google-cloud-logging
+google-cloud-core==2.4.3
+    # via google-cloud-logging
+google-cloud-logging==3.12.1
+    # via ml-goodput-measurement
+google-cloud-monitoring==2.28.0
+    # via ml-goodput-measurement
 google-pasta==0.2.0
     # via tensorflow
-googleapis-common-protos==1.70.0
-    # via tensorflow-metadata
+googleapis-common-protos[grpc]==1.70.0
+    # via
+    #   google-api-core
+    #   google-cloud-audit-log
+    #   grpc-google-iam-v1
+    #   grpcio-status
+    #   tensorflow-metadata
 grain==0.2.12
     # via -r requirements.in
+grpc-google-iam-v1==0.14.3
+    # via google-cloud-logging
 grpcio==1.75.1
     # via
+    #   google-api-core
+    #   google-cloud-appengine-logging
+    #   google-cloud-monitoring
+    #   googleapis-common-protos
+    #   grpc-google-iam-v1
+    #   grpcio-status
     #   tensorboard
     #   tensorflow
+grpcio-status==1.71.2
+    # via google-api-core
 h5py==3.14.0
     # via
     #   keras
@@ -112,6 +155,8 @@ huggingface-hub==0.35.3
     #   transformers
 humanize==4.13.0
     # via orbax-checkpoint
+hypothesis==6.142.4
+    # via -r requirements.in
 idna==3.10
     # via requests
 immutabledict==4.2.1
@@ -120,6 +165,8 @@ immutabledict==4.2.1
     #   tensorflow-datasets
 importlab==0.8.1
     # via pytype
+importlib-metadata==8.7.0
+    # via opentelemetry-api
 importlib-resources==6.5.2
     # via etils
 iniconfig==2.1.0
@@ -174,6 +221,8 @@ ml-dtypes==0.5.3
     #   keras
     #   tensorflow
     #   tensorstore
+ml-goodput-measurement==0.0.15
+    # via -r requirements.in
 more-itertools==10.8.0
     # via grain
 mpmath==1.3.0
@@ -212,11 +261,13 @@ numpy==2.1.3
     #   jaxlib
     #   keras
     #   ml-dtypes
+    #   ml-goodput-measurement
     #   optax
     #   orbax-checkpoint
     #   scipy
     #   seqio
     #   tensorboard
+    #   tensorboardx
     #   tensorflow
     #   tensorflow-datasets
     #   tensorstore
@@ -260,6 +311,8 @@ nvidia-nvjitlink-cu12==12.8.93
     #   torch
 nvidia-nvtx-cu12==12.8.90
     # via torch
+opentelemetry-api==1.38.0
+    # via google-cloud-logging
 opt-einsum==3.4.0
     # via
     #   jax
@@ -282,33 +335,54 @@ packaging==25.0
     #   pytest
     #   seqio
     #   tensorboard
+    #   tensorboardx
     #   tensorflow
     #   transformers
 pillow==11.3.0
-    # via
-    #   tensorboard
-    #   torchvision
+    # via torchvision
 pluggy==1.6.0
     # via pytest
 portpicker==1.6.0
     # via -r requirements.in
 promise==2.3
     # via tensorflow-datasets
+proto-plus==1.26.1
+    # via
+    #   google-api-core
+    #   google-cloud-appengine-logging
+    #   google-cloud-logging
+    #   google-cloud-monitoring
 protobuf==5.29.5
     # via
+    #   google-api-core
+    #   google-cloud-appengine-logging
+    #   google-cloud-audit-log
+    #   google-cloud-logging
+    #   google-cloud-monitoring
     #   googleapis-common-protos
     #   grain
+    #   grpc-google-iam-v1
+    #   grpcio-status
     #   orbax-checkpoint
+    #   proto-plus
     #   tensorboard
+    #   tensorboardx
     #   tensorflow
     #   tensorflow-datasets
     #   tensorflow-metadata
 psutil==7.1.0
     # via
+    #   -r requirements.in
     #   portpicker
     #   tensorflow-datasets
 pyarrow==21.0.0
     # via tensorflow-datasets
+pyasn1==0.6.1
+    # via
+    #   pyasn1-modules
+    #   rsa
+pyasn1-modules==0.4.2
+    # via google-auth
 pycnite==2024.7.31
     # via pytype
 pydot==4.0.1
@@ -340,7 +414,9 @@ regex==2025.9.18
     #   transformers
 requests==2.32.5
     # via
+    #   google-api-core
     #   huggingface-hub
+    #   ml-goodput-measurement
     #   tensorflow
     #   tensorflow-datasets
     #   transformers
@@ -348,6 +424,8 @@ rich==14.1.0
     # via
     #   flax
     #   keras
+rsa==4.9.1
+    # via google-auth
 safetensors==0.6.2
     # via
     #   timm
@@ -356,6 +434,7 @@ scipy==1.16.2
     # via
     #   jax
     #   jaxlib
+    #   ml-goodput-measurement
 sentencepiece==0.2.1
     # via seqio
 seqio==0.0.20
@@ -371,6 +450,8 @@ six==1.17.0
     #   promise
     #   tensorboard
     #   tensorflow
+sortedcontainers==2.4.0
+    # via hypothesis
 sympy==1.14.0
     # via torch
 tabulate==0.9.0
@@ -379,6 +460,8 @@ tensorboard==2.19.0
     # via tensorflow
 tensorboard-data-server==0.7.2
     # via tensorboard
+tensorboardx==2.6.4
+    # via ml-goodput-measurement
 tensorflow==2.19.1
     # via
     #   -r requirements.in
@@ -440,6 +523,7 @@ typing-extensions==4.15.0
     #   flax
     #   grpcio
     #   huggingface-hub
+    #   opentelemetry-api
     #   optree
     #   orbax-checkpoint
     #   pytype
@@ -447,7 +531,9 @@ typing-extensions==4.15.0
     #   tensorflow
     #   torch
 urllib3==2.5.0
-    # via requests
+    # via
+    #   ml-goodput-measurement
+    #   requests
 werkzeug==3.1.3
     # via tensorboard
 wheel==0.45.1
@@ -460,7 +546,9 @@ wrapt==1.17.3
     #   tensorflow
     #   tensorflow-datasets
 zipp==3.23.0
-    # via etils
+    # via
+    #   etils
+    #   importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 setuptools==80.9.0
