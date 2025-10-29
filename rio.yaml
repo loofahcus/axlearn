@@ -36,6 +36,9 @@ pipelines:
         DOCKER_BUILDKIT: "1"
         RBE_USER: afmcodebasebuild@apple.com
         RBE_TOKEN: ${BUILD_SECRETS_PATH}/RBE_TOKEN
+    secrets:
+      names:
+        - RBE_TOKEN
     build:
       template: freestyle:v4:prb
       steps:
