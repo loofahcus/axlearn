@@ -28,6 +28,19 @@ pipelines:
           context: .
           version: ci-${GIT_BRANCH}-${GIT_HASH}
 
+  - group: bazel-test-cpu
+    branchName: main
+    machine:
+      baseImage: docker.apple.com/acp/bazelw:latest
+      env:
+        DOCKER_BUILDKIT: "1"
+        RBE_USER: afmcodebasebuild@apple.com
+        RBE_TOKEN: ${BUILD_SECRETS_PATH}/RBE_TOKEN
+    build:
+      template: freestyle:v4:prb
+      steps:
+        - bazelw test --test_output=errors --test_tag_filters=-pytype //axlearn/...
+
   # GPU Bolt prb pipeline.
   - group: unit-tests-gpu
     disabled: false
