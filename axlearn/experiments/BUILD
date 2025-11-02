@@ -48,6 +48,7 @@ pytype_library(
         "//axlearn/common:config",
         "//axlearn/common:evaler",
         "//axlearn/common:summary_writer",
+        "//axlearn/common:test_utils",
         "//axlearn/common:trainer",
         "//axlearn/common:utils",
         "@axlearn_pip//absl_py",
