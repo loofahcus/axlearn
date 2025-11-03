@@ -23,11 +23,11 @@ absl-py==2.3.1
     #   tensorflow
     #   tensorflow-datasets
     #   tensorflow-metadata
-aiofiles==24.1.0
+aiofiles==25.1.0
     # via orbax-checkpoint
 aqtp==0.9.0
     # via -r requirements.in
-array-record==0.8.1
+array-record==0.8.2
     # via
     #   -r requirements.in
     #   grain
@@ -44,7 +44,7 @@ cachetools==6.2.1
     # via google-auth
 certifi==2025.10.5
     # via requests
-charset-normalizer==3.4.3
+charset-normalizer==3.4.4
     # via requests
 chex==0.1.90
     # via
@@ -57,9 +57,7 @@ cloudpickle==3.1.1
 clu==0.0.12
     # via seqio
 dm-tree==0.1.9
-    # via
-    #   grain
-    #   tensorflow-datasets
+    # via tensorflow-datasets
 docstring-parser==0.17.0
     # via
     #   pyglove
@@ -86,51 +84,63 @@ flax==0.11.2
     # via
     #   aqtp
     #   clu
-fsspec==2025.9.0
+fsspec==2025.10.0
     # via
     #   etils
     #   huggingface-hub
     #   torch
 gast==0.6.0
     # via tensorflow
-google-api-core[grpc]==2.28.0
+google-api-core[grpc]==2.28.1
     # via
     #   google-cloud-appengine-logging
     #   google-cloud-core
     #   google-cloud-logging
     #   google-cloud-monitoring
+    #   google-cloud-storage
     #   ml-goodput-measurement
-google-auth==2.42.0
+google-auth==2.42.1
     # via
     #   google-api-core
     #   google-cloud-appengine-logging
     #   google-cloud-core
     #   google-cloud-logging
     #   google-cloud-monitoring
+    #   google-cloud-storage
 google-cloud-appengine-logging==1.7.0
     # via google-cloud-logging
 google-cloud-audit-log==0.4.0
     # via google-cloud-logging
-google-cloud-core==2.4.3
-    # via google-cloud-logging
+google-cloud-core==2.5.0
+    # via
+    #   google-cloud-logging
+    #   google-cloud-storage
 google-cloud-logging==3.12.1
     # via ml-goodput-measurement
 google-cloud-monitoring==2.28.0
     # via ml-goodput-measurement
+google-cloud-storage==3.4.1
+    # via -r requirements.in
+google-crc32c==1.7.1
+    # via
+    #   google-cloud-storage
+    #   google-resumable-media
 google-pasta==0.2.0
     # via tensorflow
-googleapis-common-protos[grpc]==1.70.0
+google-resumable-media==2.7.2
+    # via google-cloud-storage
+googleapis-common-protos[grpc]==1.71.0
     # via
     #   google-api-core
     #   google-cloud-audit-log
     #   grpc-google-iam-v1
     #   grpcio-status
     #   tensorflow-metadata
-grain==0.2.12
+grain==0.2.14
     # via -r requirements.in
 grpc-google-iam-v1==0.14.3
     # via google-cloud-logging
-grpcio==1.75.1
+grpcio==1.76.0
     # via
     #   google-api-core
     #   google-cloud-appengine-logging
@@ -142,24 +152,24 @@ grpcio==1.75.1
     #   tensorflow
 grpcio-status==1.71.2
     # via google-api-core
-h5py==3.14.0
+h5py==3.15.1
     # via
     #   keras
     #   tensorflow
-hf-xet==1.1.10
+hf-xet==1.2.0
     # via huggingface-hub
-huggingface-hub==0.35.3
+huggingface-hub==0.36.0
     # via
     #   timm
     #   tokenizers
     #   transformers
-humanize==4.13.0
+humanize==4.14.0
     # via orbax-checkpoint
-hypothesis==6.142.4
+hypothesis==6.143.0
     # via -r requirements.in
-idna==3.10
+idna==3.11
     # via requests
-immutabledict==4.2.1
+immutabledict==4.2.2
     # via
     #   pytype
     #   tensorflow-datasets
@@ -169,7 +179,7 @@ importlib-metadata==8.7.0
     # via opentelemetry-api
 importlib-resources==6.5.2
     # via etils
-iniconfig==2.1.0
+iniconfig==2.3.0
     # via pytest
 jax==0.6.2
     # via
@@ -196,7 +206,7 @@ jinja2==3.1.6
     #   torch
 joblib==1.5.2
     # via nltk
-keras==3.11.3
+keras==3.12.0
     # via tensorflow
 libclang==18.1.1
     # via tensorflow
@@ -223,8 +233,6 @@ ml-dtypes==0.5.3
     #   tensorstore
 ml-goodput-measurement==0.0.15
     # via -r requirements.in
-more-itertools==10.8.0
-    # via grain
 mpmath==1.3.0
     # via sympy
 msgpack==1.1.2
@@ -301,7 +309,7 @@ nvidia-cusparse-cu12==12.5.8.93
     #   torch
 nvidia-cusparselt-cu12==0.7.1
     # via torch
-nvidia-nccl-cu12==2.27.3
+nvidia-nccl-cu12==2.27.5
     # via torch
 nvidia-nvjitlink-cu12==12.8.93
     # via
@@ -309,6 +317,8 @@ nvidia-nvjitlink-cu12==12.8.93
     #   nvidia-cusolver-cu12
     #   nvidia-cusparse-cu12
     #   torch
+nvidia-nvshmem-cu12==3.3.20
+    # via torch
 nvidia-nvtx-cu12==12.8.90
     # via torch
 opentelemetry-api==1.38.0
@@ -323,7 +333,7 @@ optax==0.2.6
     #   flax
 optree==0.17.0
     # via keras
-orbax-checkpoint==0.11.25
+orbax-checkpoint==0.11.26
     # via
     #   -r requirements.in
     #   flax
@@ -338,8 +348,10 @@ packaging==25.0
     #   tensorboardx
     #   tensorflow
     #   transformers
-pillow==11.3.0
-    # via torchvision
+pillow==12.0.0
+    # via
+    #   tensorboard
+    #   torchvision
 pluggy==1.6.0
     # via pytest
 portpicker==1.6.0
@@ -370,12 +382,13 @@ protobuf==5.29.5
     #   tensorflow
     #   tensorflow-datasets
     #   tensorflow-metadata
-psutil==7.1.0
+psutil==7.1.2
     # via
     #   -r requirements.in
+    #   orbax-checkpoint
     #   portpicker
     #   tensorflow-datasets
-pyarrow==21.0.0
+pyarrow==22.0.0
     # via tensorflow-datasets
 pyasn1==0.6.1
     # via
@@ -408,19 +421,20 @@ pyyaml==6.0.3
     #   orbax-checkpoint
     #   timm
     #   transformers
-regex==2025.9.18
+regex==2025.10.23
     # via
     #   nltk
     #   transformers
 requests==2.32.5
     # via
     #   google-api-core
+    #   google-cloud-storage
     #   huggingface-hub
     #   ml-goodput-measurement
     #   tensorflow
     #   tensorflow-datasets
     #   transformers
-rich==14.1.0
+rich==14.2.0
     # via
     #   flax
     #   keras
@@ -430,7 +444,7 @@ safetensors==0.6.2
     # via
     #   timm
     #   transformers
-scipy==1.16.2
+scipy==1.16.3
     # via
     #   jax
     #   jaxlib
@@ -479,12 +493,12 @@ tensorstore==0.1.78
     #   -r requirements.in
     #   flax
     #   orbax-checkpoint
-termcolor==3.1.0
+termcolor==3.2.0
     # via
     #   pyglove
     #   tensorflow
     #   tensorflow-datasets
-timm==1.0.20
+timm==1.0.21
     # via -r requirements.in
 tokenizers==0.22.1
     # via transformers
@@ -492,14 +506,14 @@ toml==0.10.2
     # via
     #   pytype
     #   tensorflow-datasets
-toolz==1.0.0
+toolz==1.1.0
     # via chex
-torch==2.8.0
+torch==2.9.0
     # via
     #   -r requirements.in
     #   timm
     #   torchvision
-torchvision==0.23.0
+torchvision==0.24.0
     # via timm
 tqdm==4.67.1
     # via
@@ -508,11 +522,11 @@ tqdm==4.67.1
     #   nltk
     #   tensorflow-datasets
     #   transformers
-transformers==4.57.0
+transformers==4.57.1
     # via -r requirements.in
 treescope==0.1.10
     # via flax
-triton==3.4.0
+triton==3.5.0
     # via torch
 typing-extensions==4.15.0
     # via
@@ -538,7 +552,7 @@ werkzeug==3.1.3
     # via tensorboard
 wheel==0.45.1
     # via astunparse
-wrapt==1.17.3
+wrapt==2.0.0
     # via
     #   -r requirements.in
     #   clu
@@ -557,4 +571,3 @@ setuptools==80.9.0
     #   tensorboard
     #   tensorflow
     #   torch
-    #   triton

@@ -33,8 +33,11 @@ pytype_library(
     srcs = ["measurement.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "@axlearn_pip//absl_py",
         "//axlearn/cloud/common:utils",
+        "//axlearn/common:config",
+        "//axlearn/common:measurement_base",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//google_cloud_storage",
         "@axlearn_pip//jax",
         "@axlearn_pip//jaxlib",
         "@axlearn_pip//ml_goodput_measurement",

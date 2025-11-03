@@ -1024,11 +1024,33 @@ pytype_library(
 )
 
 pytype_library(
+    name = "measurement_base",
+    srcs = ["measurement_base.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        "@axlearn_pip//absl_py",
+    ],
+)
+
+pytype_library(
     name = "measurement",
     srcs = ["measurement.py"],
     visibility = ["//visibility:public"],
     deps = [
-        ":config",
+        ":measurement_base",
+        "@axlearn_pip//absl_py",
+    ],
+)
+
+pytype_test(
+    name = "measurement_test",
+    srcs = ["measurement_test.py"],
+    deps = [
+        ":measurement",
+        ":measurement_base",
+        "//axlearn/cloud",
+        "//axlearn/cloud/gcp:measurement",
         "@axlearn_pip//absl_py",
     ],
 )
@@ -1364,6 +1386,7 @@ pytype_binary(
         ":launch",
         ":launch_trainer",
         ":measurement",
+        "//axlearn/cloud/gcp:measurement",
         # Experiment modules for dynamic loading with all dependencies
         "//axlearn/experiments:__init__",
         "//axlearn/experiments:logistic_regression_tutorial",
