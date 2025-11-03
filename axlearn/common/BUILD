@@ -1542,6 +1542,7 @@ pytype_library(
     deps = [
         ":config",
         ":input_base",
+        ":file_system",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//tensorflow",
     ],
