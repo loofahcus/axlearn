@@ -1545,6 +1545,7 @@ pytype_library(
         ":file_system",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//tensorflow",
+        "@axlearn_pip//seqio",
     ],
 )
 
@@ -1679,5 +1680,69 @@ pytype_library(
         "@axlearn_pip//seqio",
         "@axlearn_pip//tensorflow",
         "@axlearn_pip//tensorflow_text",
+    ],
+)
+
+pytype_library(
+    name = "inference_pipeline",
+    srcs = ["inference_pipeline.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":inference",
+        ":inference_output",
+        ":input_tf_data",
+        ":module",
+        ":summary_writer",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//tensorflow",
+    ],
+)
+
+pytype_library(
+    name = "inference",
+    srcs = ["inference.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_model",
+        ":checkpointer",
+        ":config",
+        ":module",
+        ":state_builder",
+        ":trainer",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_test(
+    name = "inference_test",
+    srcs = ["inference_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":base_model",
+        ":checkpointer",
+        ":config",
+        ":inference",
+        ":inference_output",
+        ":inference_pipeline",
+        ":input_tf_data",
+        ":layers",
+        ":module",
+        ":optimizers",
+        ":param_init",
+        ":state_builder",
+        ":test_utils",
+        ":trainer",
+        ":utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//tensorflow",
     ],
 )
