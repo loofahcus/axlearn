@@ -1746,3 +1746,37 @@ pytype_test(
         "@axlearn_pip//tensorflow",
     ],
 )
+
+pytype_library(
+    name = "vision_transformer",
+    srcs = ["vision_transformer.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":attention",
+        ":base_layer",
+        ":config",
+        ":convolution",
+        ":layers",
+        ":module",
+        ":param_init",
+        ":poolings",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_test(
+    name = "vision_transformer_test",
+    srcs = ["vision_transformer_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":vision_transformer",
+        ":module",
+        ":test_utils",
+        ":utils",
+        "//axlearn/vision:mask_generator",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
