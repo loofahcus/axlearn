@@ -25,6 +25,8 @@ absl-py==2.3.1
     #   tensorflow-metadata
 aiofiles==25.1.0
     # via orbax-checkpoint
+annotated-types==0.7.0
+    # via pydantic
 aqtp==0.9.0
     # via -r requirements.in
 array-record==0.8.2
@@ -43,7 +45,9 @@ attrs==25.4.0
 cachetools==6.2.1
     # via google-auth
 certifi==2025.10.5
-    # via requests
+    # via
+    #   requests
+    #   sentry-sdk
 charset-normalizer==3.4.4
     # via requests
 chex==0.1.90
@@ -51,7 +55,9 @@ chex==0.1.90
     #   -r requirements.in
     #   optax
 click==8.3.0
-    # via nltk
+    # via
+    #   nltk
+    #   wandb
 cloudpickle==3.1.1
     # via grain
 clu==0.0.12
@@ -91,6 +97,10 @@ fsspec==2025.10.0
     #   torch
 gast==0.6.0
     # via tensorflow
+gitdb==4.0.12
+    # via gitpython
+gitpython==3.1.45
+    # via wandb
 google-api-core[grpc]==2.28.1
     # via
     #   google-cloud-appengine-logging
@@ -348,10 +358,11 @@ packaging==25.0
     #   tensorboardx
     #   tensorflow
     #   transformers
+    #   wandb
 pillow==12.0.0
-    # via
-    #   tensorboard
-    #   torchvision
+    # via torchvision
+platformdirs==4.5.0
+    # via wandb
 pluggy==1.6.0
     # via pytest
 portpicker==1.6.0
@@ -382,6 +393,7 @@ protobuf==5.29.5
     #   tensorflow
     #   tensorflow-datasets
     #   tensorflow-metadata
+    #   wandb
 psutil==7.1.2
     # via
     #   -r requirements.in
@@ -398,6 +410,10 @@ pyasn1-modules==0.4.2
     # via google-auth
 pycnite==2024.7.31
     # via pytype
+pydantic==2.12.4
+    # via wandb
+pydantic-core==2.41.5
+    # via pydantic
 pydot==4.0.1
     # via pytype
 pyglove==0.4.5
@@ -421,6 +437,7 @@ pyyaml==6.0.3
     #   orbax-checkpoint
     #   timm
     #   transformers
+    #   wandb
 regex==2025.10.23
     # via
     #   nltk
@@ -434,6 +451,7 @@ requests==2.32.5
     #   tensorflow
     #   tensorflow-datasets
     #   transformers
+    #   wandb
 rich==14.2.0
     # via
     #   flax
@@ -451,6 +469,8 @@ scipy==1.16.3
     #   ml-goodput-measurement
 sentencepiece==0.2.1
     # via seqio
+sentry-sdk==2.43.0
+    # via wandb
 seqio==0.0.20
     # via -r requirements.in
 simple-parsing==0.1.7
@@ -464,6 +484,8 @@ six==1.17.0
     #   promise
     #   tensorboard
     #   tensorflow
+smmap==5.0.2
+    # via gitdb
 sortedcontainers==2.4.0
     # via hypothesis
 sympy==1.14.0
@@ -540,14 +562,23 @@ typing-extensions==4.15.0
     #   opentelemetry-api
     #   optree
     #   orbax-checkpoint
+    #   pydantic
+    #   pydantic-core
     #   pytype
     #   simple-parsing
     #   tensorflow
     #   torch
+    #   typing-inspection
+    #   wandb
+typing-inspection==0.4.2
+    # via pydantic
 urllib3==2.5.0
     # via
     #   ml-goodput-measurement
     #   requests
+    #   sentry-sdk
+wandb==0.22.3
+    # via -r requirements.in
 werkzeug==3.1.3
     # via tensorboard
 wheel==0.45.1

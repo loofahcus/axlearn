@@ -1,7 +1,7 @@
 module(name = "axlearn", version = "0.0.1")
 
 # BEGIN_APPLE
-bazel_dep(name = "apple_federation", version = "0.212.0")
+bazel_dep(name = "apple_federation", version = "0.214.0")
 # END_APPLE
 
 bazel_dep(name = "rules_python", version = "1.5.3")

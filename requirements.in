@@ -28,3 +28,4 @@ hypothesis
 ml_goodput_measurement
 psutil
 google-cloud-storage
+wandb

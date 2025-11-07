@@ -1187,6 +1187,7 @@ pytype_library(
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
         "@axlearn_pip//tensorflow",
+        "@axlearn_pip//wandb",
     ],
 )
 
