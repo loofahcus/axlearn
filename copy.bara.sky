@@ -18,6 +18,7 @@ external_url = "git@github.com:apple/axlearn.git"
 
 internal_only_files = [
     "rio.yaml",
+    "codegenius.yaml",
     "pull_request_template.md",
     "CODEOWNERS",
     "copy.bara.sky",

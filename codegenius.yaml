@@ -1,0 +1,14 @@
+---
+# https://devx.corp.apple.com/code-genius/features/pr-assist-github
+schemaVersion: '1.5'
+# If you are working on a disclosure-sensitive project, ensure that logging is disabled in Settings
+server_side_logging_enabled: false
+pull_request:
+    summary:
+        auto_generate_on_pr_create: false
+    security_review:
+        auto_generate_on_pr_create: false
+    review:
+        auto_generate_on_pr_create: true
+        auto_approve: false
+        exclude_paths: '*.lock'
