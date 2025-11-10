@@ -397,6 +397,27 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "embedding_test",
+    srcs = ["embedding_test.py"],
+    deps = [
+        ":embedding",
+        ":utils",
+        ":module",
+        ":config",
+        ":attention",
+        ":layers",
+        ":param_converter",
+        ":test_utils",
+        ":torch_utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//transformers",
+    ],
+)
+
+
 pytype_library(
     name = "deberta",
     srcs = ["deberta.py"],
