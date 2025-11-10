@@ -6,7 +6,6 @@ pytype_library(
     srcs = ["__init__.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "//axlearn/common",
         "//axlearn/common:attention",
         "//axlearn/common:base_layer",
         "//axlearn/common:base_model",

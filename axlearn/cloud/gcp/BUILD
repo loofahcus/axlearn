@@ -51,6 +51,7 @@ pytype_test(
     visibility = ["//visibility:public"],
     deps = [
         ":measurement",
+        "//axlearn/common:measurement",
         "@axlearn_pip//absl_py",
     ],
 )
@@ -61,7 +62,7 @@ pytype_library(
     srcs = ["tpu.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "//axlearn/common",
+        "//axlearn/common:compiler_options",
         "@axlearn_pip//absl_py",
     ],
 )

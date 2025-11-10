@@ -1,33 +1,6 @@
 load("//pytype_bazel:pytype.bzl", "pytype_binary", "pytype_library", "pytype_test")
 
-# Main common library that includes commonly used modules
-pytype_library(
-    name = "common",
-    srcs = [],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":attention",
-        ":base_layer",
-        ":base_model",
-        ":config",
-        ":ein_ops",
-        ":input_base",
-        ":input_fake",
-        ":input_lm",
-        ":input_tf_data",
-        ":layers",
-        ":learner",
-        ":module",
-        ":optimizer_base",
-        ":optimizers",
-        ":param_init",
-        ":schedule",
-        ":trainer",
-        ":utils",
-    ],
-)
-
-# NOTE (wyi): I haven’t added the attention_test target because attention_test.py verifies the
+# NOTE (wyi): I haven't added the attention_test target because attention_test.py verifies the
 # JAX-based attention implementation by parity-checking against HuggingFace Transformers. Defining
 # an attention_test target would therefore require adding both PyTorch and HuggingFace Transformers
 # to requirements.in. A possible alternative might be to remove the parity check and instead
@@ -1542,11 +1515,11 @@ pytype_library(
     visibility = ["//visibility:public"],
     deps = [
         ":config",
-        ":input_base",
         ":file_system",
+        ":input_base",
         "@axlearn_pip//absl_py",
-        "@axlearn_pip//tensorflow",
         "@axlearn_pip//seqio",
+        "@axlearn_pip//tensorflow",
     ],
 )
 
@@ -1771,10 +1744,10 @@ pytype_test(
     srcs = ["vision_transformer_test.py"],
     visibility = ["//visibility:public"],
     deps = [
-        ":vision_transformer",
         ":module",
         ":test_utils",
         ":utils",
+        ":vision_transformer",
         "//axlearn/vision:mask_generator",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
