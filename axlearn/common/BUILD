@@ -834,6 +834,22 @@ pytype_library(
     ],
 )
 
+pytype_test(
+    name = "loss_metrics_test",
+    srcs = ["loss_metrics_test.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":loss_metrics",
+        ":metrics",
+        ":embedding",
+        ":module",
+        ":test_utils",
+        ":config",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//absl_py",
+    ],
+)
+
 pytype_library(
     name = "normalize",
     srcs = ["normalize.py"],
