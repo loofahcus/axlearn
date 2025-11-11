@@ -1466,6 +1466,7 @@ pytype_library(
     deps = [
         ":config",
         ":utils",
+        ":inference",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
     ],
