@@ -28,11 +28,22 @@ pytype_library(
     ],
 )
 
+# Flash attention types
+pytype_library(
+    name = "types",
+    srcs = ["types.py"],
+    deps = [
+        "//axlearn/common:utils",
+        "@axlearn_pip//jax",
+    ],
+)
+
 # Common flash attention components
 pytype_library(
     name = "common",
     srcs = ["common.py"],
     deps = [
+        ":types",
         "//axlearn/common:attention",
         "//axlearn/common:base_layer",
         "//axlearn/common:config",
