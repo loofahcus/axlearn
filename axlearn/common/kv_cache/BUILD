@@ -38,6 +38,7 @@ pytype_library(
     srcs = ["sliding_window_kv_cache.py"],
     deps = [
         ":base_kv_cache",
+        "//axlearn/common:attention",
         "//axlearn/common:attention_bias",
         "//axlearn/common:base_layer",
         "//axlearn/common:config",
