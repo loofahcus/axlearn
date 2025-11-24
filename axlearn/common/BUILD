@@ -174,39 +174,6 @@ pytype_library(
     ],
 )
 
-pytype_library(
-    name = "checkpointer_orbax_emergency",
-    srcs = ["checkpointer_orbax_emergency.py"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":checkpointer",
-        ":config",
-        ":file_system",
-        ":module",
-        ":utils",
-        ":utils_spmd",
-        "@axlearn_pip//absl_py",
-        "@axlearn_pip//jax",
-        "@axlearn_pip//orbax_checkpoint",
-        "@axlearn_pip//tensorflow",
-    ],
-)
-
-pytype_test(
-    name = "checkpointer_orbax_emergency_test",
-    srcs = ["checkpointer_orbax_emergency_test.py"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":checkpointer_orbax_emergency",
-        ":utils_spmd",
-        "@axlearn_pip//absl_py",
-        "@axlearn_pip//jax",
-        "@axlearn_pip//numpy",
-        "@axlearn_pip//orbax_checkpoint",
-        "@axlearn_pip//tensorflow",
-    ],
-)
-
 pytype_test(
     name = "checkpointer_test",
     srcs = ["checkpointer_test.py"],
