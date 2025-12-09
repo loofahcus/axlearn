@@ -143,9 +143,11 @@ pytype_library(
     name = "checkpointer",
     srcs = ["checkpointer.py"],
     visibility = ["//visibility:public"],
+
     deps = [
         ":array_serialization",
         ":config",
+        ":elastic_input",
         ":file_system",
         ":metrics",
         ":module",
@@ -627,6 +629,21 @@ pytype_library(
     deps = [
         ":config",
         ":module",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
+pytype_library(
+    name = "elastic_input",
+    srcs = ["elastic_input.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":config",
+        ":input_base",
+        ":input_dispatch",
+        ":module",
+        ":utils",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
     ],
