@@ -25,6 +25,7 @@ pipelines:
           target: ci
           env:
             TARGET: ci
+            BASE_IMAGE_COLOCATED: ubuntu:22.04
           context: .
           version: ci-${GIT_BRANCH}-${GIT_HASH}
 
@@ -208,6 +209,7 @@ pipelines:
           target: ci
           env:
             TARGET: ci
+            BASE_IMAGE_COLOCATED: ubuntu:22.04
           context: .
           version: ci-mq-${GIT_BRANCH}-${GIT_HASH}
 
