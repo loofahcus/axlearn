@@ -45,6 +45,32 @@ pipelines:
       steps:
         - bazelw test --test_output=errors --test_tag_filters=-pytype //axlearn/...
 
+  # PyRight type checking pipeline (manual)
+  - group: pyright-type-check
+    branchName: main
+    trigger:
+      gitPush: false
+    machine:
+      baseImage: docker.apple.com/base-images/ubi9/python3.10-builder:latest
+      env:
+        DOCKER_BUILDKIT: "1"
+    build:
+      template: freestyle:v4:build
+      steps:
+        - curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+        - yum install -y nodejs
+        - npm install -g pyright
+        - python3 -m pip install --upgrade pip
+        - python3 -m pip install numpy jax jaxlib typing-extensions
+        - python3 -m pip install --no-deps -e .
+        - |
+          pyright axlearn
+    finally:
+      notify:
+        pullRequestComment:
+          postOnSuccess: false
+          postOnFailure: false  # Don't block PRs on PyRight failures yet
+
   # GPU Bolt prb pipeline.
   - group: unit-tests-gpu
     disabled: false
