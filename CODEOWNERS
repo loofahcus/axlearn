@@ -6,3 +6,4 @@ axlearn/common/kv_cache @hanzhi-zhou @xuan-zou @foundation-models/axlearn-team
 copy.bara.sky @foundation-models/ajax-infra @foundation-models/ajax-oncall @foundation-models/axlearn-team
 rio.yaml @foundation-models/ajax-infra @foundation-models/ajax-oncall @foundation-models/axlearn-team
 pyproject.toml @foundation-models/ajax-infra @foundation-models/ajax-oncall @foundation-models/axlearn-team
+requirements* @ywang999828 @chang-lan @ethanli @junxu @zfc
