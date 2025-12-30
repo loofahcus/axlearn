@@ -143,7 +143,6 @@ from axlearn.common.param_init import (
     ConstantInitializer,
     DefaultInitializer,
     FanAxes,
-    GaussianInitializer,
     WeightInitializer,
     constant_initializer,
 )
@@ -1842,11 +1841,7 @@ class MultiheadAttention(BaseLayer):
         cfg = self.config
         params = {}
         if cfg.logit_sink:
-            initializer = (
-                GaussianInitializer.default_config()
-                .set(std=math.sqrt(self.per_head_dim()))
-                .instantiate()
-            )
+            initializer = ConstantInitializer.default_config().set(value=-10).instantiate()
             params["sink"] = ParameterSpec(
                 shape=(cfg.num_heads,),
                 mesh_axes=("model",),
