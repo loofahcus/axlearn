@@ -74,19 +74,32 @@ pytype_library(
     ],
 )
 
+# Splash attention mask
+pytype_library(
+    name = "splash_attention_mask",
+    srcs = ["splash_attention_mask.py"],
+    deps = [
+        "//axlearn/common:utils",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+    ],
+)
+
 # TPU-specific attention implementation
 pytype_library(
     name = "tpu_attention",
     srcs = ["tpu_attention.py"],
     deps = [
         ":common",
-        "//axlearn/common:attention",
-        "//axlearn/common:base_layer",
-        "//axlearn/common:config",
-        "//axlearn/common:module",
+        ":remat",
+        ":splash_attention_mask",
+        ":tpu_splash_attention",
+        ":types",
+        "//axlearn/common:attention_bias",
         "//axlearn/common:utils",
+        "//axlearn/common/kv_cache:base_kv_cache",
+        "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
-        "@axlearn_pip//jaxlib",
         "@axlearn_pip//numpy",
     ],
 )
@@ -329,11 +342,27 @@ pytype_test(
 )
 
 pytype_test(
+    name = "splash_attention_mask_test",
+    srcs = ["splash_attention_mask_test.py"],
+    deps = [
+        ":splash_attention_mask",
+        "//axlearn/common:attention_bias",
+        "//axlearn/common:test_utils",
+        "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
+        "@axlearn_pip//numpy",
+        "@axlearn_pip//pytest",
+    ],
+)
+
+pytype_test(
     name = "tpu_attention_test",
     srcs = ["tpu_attention_test.py"],
     deps = [
+        ":splash_attention_mask",
         ":test_utils",
         ":tpu_attention",
+        "//axlearn/common:attention_bias",
         "//axlearn/common:test_utils",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
