@@ -71,6 +71,32 @@ pipelines:
           postOnSuccess: false
           postOnFailure: false  # Don't block PRs on PyRight failures yet
 
+  # Bolt image for unit-tests-gpu ci job
+  - group: unit-tests-gpu-image
+    branchName: main
+    machine:
+      baseImage: docker.apple.com/base-images/ubi8/python3.9-builder
+      env:
+        DOCKER_BUILDKIT: "1"
+    build:
+      template: freestyle:v4:publish
+      steps:
+        # Do not submit trust script to repo to avoid possibly releasing to public.
+        - git clone https://github.pie.apple.com/crypto-services/trust-apple-corp-root-cas.git trust-apple-corp-root-cas
+    package:
+      dockerfile:
+        - dockerfilePath: ci/docker/Dockerfile.gpu
+          perApplication: false
+          target: base
+          env:
+            TARGET: base
+            BASE_IMAGE_COLOCATED: ubuntu:22.04
+          context: .
+          version: ${GIT_HASH}
+          extraTags: ['latest']
+          publish:
+            - repo: docker.apple.com/axlearn/bolt/ci/gpu
+
   # GPU Bolt prb pipeline.
   - group: unit-tests-gpu
     disabled: false
