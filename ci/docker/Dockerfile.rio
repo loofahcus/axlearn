@@ -1,0 +1,55 @@
+# This image is used as the rio.apple.com machine base image. It is
+# intended to be as small as possible while being able to launch axlearn
+# cli for scheduling GPU/TPU tasks on Bastion and using GCP tooling, and
+# also have required pip packages pre-installed so minimal re-installations
+# occur at runtime.
+
+ARG TARGET=base
+ARG BASE_IMAGE=ubuntu:22.04
+
+FROM ${BASE_IMAGE} AS base
+
+RUN apt-get update -qq && \
+    apt-get upgrade -y -qq && \
+    apt-get install -y -qq curl gnupg && \
+    apt clean -y -qq
+
+# Install requirements, note installation of python and google-cloud-cli.
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && \
+    apt-get update -y -qq && \
+    apt-get install -y -qq apt-transport-https ca-certificates gcc g++ \
+    git screen ca-certificates google-perftools google-cloud-cli=457.0.0-0 python3.10-venv python3.10-dev jq && \
+    apt clean -y -qq
+
+# Setup.
+RUN mkdir -p /root
+WORKDIR /root
+
+# Setup venv to suppress pip warnings.
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Set CLOUDSDK_PYTHON to use venv python for gcloud operations.
+ENV CLOUDSDK_PYTHON="${VIRTUAL_ENV}/bin/python3"
+
+# Configure trust for Apple Corporate Root CAs if not running from GCP.
+# See https://github.pie.apple.com/crypto-services/trust-apple-corp-root-cas#debianubuntu for more details.
+COPY trust-apple-corp-root-cas/trust_apple_corp_root_cas.sh /usr/local/bin
+RUN chmod 755 "/usr/local/bin/trust_apple_corp_root_cas.sh" && \
+    bash "/usr/local/bin/trust_apple_corp_root_cas.sh"
+
+# Use Apple pypi.
+ENV PIP_EXTRA_INDEX_URL=https://pypi.apple.com/simple
+
+# Introduce the minimum set of files for install.
+RUN mkdir axlearn && touch axlearn/__init__.py
+
+# Install axlearn dependencies.
+RUN pip install -qq --upgrade pip && \
+    pip install -qq uv flit && \
+    pip cache purge
+COPY pyproject.toml README.md /root/
+RUN uv pip install -qq .[core,gcp] && \
+    uv cache clean
