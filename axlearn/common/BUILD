@@ -143,7 +143,6 @@ pytype_library(
     name = "checkpointer",
     srcs = ["checkpointer.py"],
     visibility = ["//visibility:public"],
-
     deps = [
         ":array_serialization",
         ":config",
@@ -370,22 +369,21 @@ pytype_test(
     name = "embedding_test",
     srcs = ["embedding_test.py"],
     deps = [
-        ":embedding",
-        ":utils",
-        ":module",
-        ":config",
         ":attention",
+        ":config",
+        ":embedding",
         ":layers",
+        ":module",
         ":param_converter",
         ":test_utils",
         ":torch_utils",
+        ":utils",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
         "@axlearn_pip//numpy",
         "@axlearn_pip//transformers",
     ],
 )
-
 
 pytype_library(
     name = "deberta",
@@ -823,14 +821,14 @@ pytype_test(
     srcs = ["loss_metrics_test.py"],
     visibility = ["//visibility:public"],
     deps = [
+        ":config",
+        ":embedding",
         ":loss_metrics",
         ":metrics",
-        ":embedding",
         ":module",
         ":test_utils",
-        ":config",
-        "@axlearn_pip//jax",
         "@axlearn_pip//absl_py",
+        "@axlearn_pip//jax",
     ],
 )
 
@@ -1384,7 +1382,7 @@ pytype_binary(
         "//axlearn/cloud/gcp:measurement",
         # Experiment modules for dynamic loading with all dependencies
         "//axlearn/experiments:__init__",
-        "//axlearn/experiments:logistic_regression_tutorial",
+        "//axlearn/experiments/logistic_regression:tutorial",
         # Add other experiment modules here as they get Bazelized
         "@axlearn_pip//absl_py",
     ],
@@ -1465,8 +1463,8 @@ pytype_library(
     visibility = ["//visibility:public"],
     deps = [
         ":config",
-        ":utils",
         ":inference",
+        ":utils",
         "@axlearn_pip//absl_py",
         "@axlearn_pip//jax",
     ],

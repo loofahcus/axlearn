@@ -59,37 +59,12 @@ pytype_library(
     ],
 )
 
-pytype_library(
-    name = "logistic_regression_tutorial",
-    srcs = ["logistic_regression_tutorial.py"],
-    enable_pytype = False,  # Complex dependencies - focus on functionality
-    visibility = ["//visibility:public"],
-    deps = [
-        ":trainer_config_utils",
-        "//axlearn/common:base_model",
-        "//axlearn/common:checkpointer",
-        "//axlearn/common:config",
-        "//axlearn/common:evaler",
-        "//axlearn/common:input_fake",
-        "//axlearn/common:input_grain",
-        "//axlearn/common:layers",
-        "//axlearn/common:learner",
-        "//axlearn/common:module",
-        "//axlearn/common:optimizers",
-        "//axlearn/common:schedule",
-        "//axlearn/common:trainer",
-        "//axlearn/common:utils",
-        "@axlearn_pip//jax",
-        "@axlearn_pip//numpy",
-    ],
-)
-
 # Filegroup containing all experiment modules for runtime access
 filegroup(
     name = "all_experiments",
     srcs = [
         ":__init__",
-        ":logistic_regression_tutorial",
+        "//axlearn/experiments/logistic_regression:tutorial",
         # Add other experiment modules here as they get Bazelized
     ],
     visibility = ["//visibility:public"],
