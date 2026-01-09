@@ -159,7 +159,7 @@ pipelines:
     disabled: false
     branchName: main
     machine:
-      baseImage: docker.apple.com/ajax/base:latest
+      baseImage: docker.apple.com/axlearn/bolt/ci/rio:latest
     secrets:
       names:
         - mlinfrasys-env
