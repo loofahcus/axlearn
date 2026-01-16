@@ -3921,7 +3921,7 @@ def set_attention_partition_specs(
     input_linear_cfg = cfg.input_linear
     if hasattr(input_linear_cfg, "input_linear"):
         input_linear_cfg = input_linear_cfg.input_linear
-    input_linear_cfg.layer.param_partition_spec = (fsdp_axis_names, tp_axis_names, None)
+    input_linear_cfg.layer.param_partition_spec = (fsdp_axis_names, None, None)
     cfg.output_linear.param_partition_spec = (fsdp_axis_names, tp_axis_names, None)
 
     if set_attn_activation_specs:
